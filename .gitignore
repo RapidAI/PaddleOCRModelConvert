@@ -1,6 +1,13 @@
 *.onnx
 .vscode
-pretrained_models/
 
 __pycache__/
 *.pyc
+
+*.pdiparams
+*.info
+*.pdmodel
+*.pdopt
+*.pdparams
+*.states
+*.log
