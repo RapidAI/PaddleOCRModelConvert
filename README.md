@@ -14,4 +14,4 @@
         ```shell
         bash convert_rec_pretrain_model.sh
         ```
-3. 最终转换后的模型会在`conver_model`目录下
+3. 最终转换后的模型会在`convert_model`目录下
