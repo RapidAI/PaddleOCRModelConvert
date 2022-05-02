@@ -9,9 +9,6 @@ function echoColor() {
 # 测试图像，用于比较转换前后是否一致
 test_img_path="doc/imgs_words_en/word_10.png"
 
-# 转换模型对应的配置文件
-yml_path="configs/rec/multi_language/rec_en_number_lite_train.yml"
-
 # 下载好的推理模型地址
 save_inference_path="pretrained_models/en_number_mobile_v2.0_rec_infer"
 
