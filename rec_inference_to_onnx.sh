@@ -19,26 +19,26 @@ rec_char_dict_path="ppocr/utils/en_dict.txt"
 save_onnx_path="convert_model/${save_inference_path##*/}.onnx"
 
 # inference → onnx
-echoColor ">>>starting inference → onnx"
+echoColor ">>> starting inference → onnx"
 paddle2onnx --model_dir ${save_inference_path} \
             --model_filename inference.pdmodel \
             --params_filename inference.pdiparams \
             --save_file ${save_onnx_path} \
             --opset_version 12
-echoColor ">>>finished converted"
+echoColor ">>> finished converted"
 
 # onnx → dynamic onnx
-echoColor ">>>strarting change it to dynamic model"
-python convert_2_change_dynamic.py --onnx_path ${save_onnx_path} \
-                                   --type_model "rec"
-echoColor ">>>finished converted"
+echoColor ">>> strarting change it to dynamic model"
+python rec_change_dynamic.py --onnx_path ${save_onnx_path} \
+                             --type_model "rec"
+echoColor ">>> finished converted"
 
 # verity onnx
-echoColor ">>>starting verity consistent"
-python3 tools/infer/predict_rec_vertify_same.py --image_dir=${test_img_path} \
-                                                --rec_model_dir=${save_inference_path} \
-                                                --onnx_path ${save_onnx_path} \
-                                                --rec_char_dict_path ${rec_char_dict_path}
-echoColor ">>>finished converted"
+echoColor ">>> starting verity consistent"
+python tools/infer/predict_rec_vertify_same.py --image_dir=${test_img_path} \
+                                               --rec_model_dir=${save_inference_path} \
+                                               --onnx_path ${save_onnx_path} \
+                                               --rec_char_dict_path ${rec_char_dict_path}
+echoColor ">>> finished converted"
 
-echoColor ">>>The final model has been saved "${save_onnx_path}
+echoColor ">>> The final model has been saved "${save_onnx_path}
