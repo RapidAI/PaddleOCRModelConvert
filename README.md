@@ -17,13 +17,21 @@
 1. 从[这里](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.4/doc/doc_ch/models_list.md)下载自己需要转换文本识别模块的**inference**或者**pretrained**模型，保存到`pretrained_models`目录下
 2. 配置并运行一下脚本
    **Note: 注意配置里面相应参数**
-    - 如果下载的是推理模型
+    - 推理模型转换
         ```shell
         bash rec_inference_to_onnx.sh
         ```
-    - 如果是预训练模型
+    - 预训练模型转换
         ```shell
         bash rec_pretrain_to_onnx.sh
+        ```
+    - 如果遇到`rec_inference_to_onnx.sh: line 3: $'\r': command not found`类似错误
+        ```bash
+        $ vi rec_inference_to_onnx.sh
+
+        # vi中执行以下命令即可
+        # :set ff=unix
+        # :wq
         ```
 3. 最终转换后的模型会在`convert_model`目录下
 4. 可以移步到[RapidOCR部分的python目录](https://github.com/RapidAI/RapidOCR/tree/main/python/onnxruntime_infer)，替换相应模型即可
