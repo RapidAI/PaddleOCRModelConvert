@@ -7,7 +7,7 @@ imgaug==0.4.0
 lmdb==1.0.0
 requests==2.24.0
 Shapely==1.7.1
-numpy==1.19.2
+numpy>=1.21
 pyclipper==1.2.0
 paddlepaddle_gpu
 visualdl==2.0.5
