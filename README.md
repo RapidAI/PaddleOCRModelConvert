@@ -23,3 +23,4 @@
         bash rec_pretrain_to_onnx.sh
         ```
 3. 最终转换后的模型会在`convert_model`目录下
+4. 可以移步到[RapidOCR部分的python目录](https://github.com/RapidAI/RapidOCR/tree/main/python/onnxruntime_infer)，替换相应模型即可
