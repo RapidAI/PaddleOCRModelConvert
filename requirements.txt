@@ -11,3 +11,4 @@ pyclipper==1.2.0
 paddlepaddle_gpu
 visualdl==2.0.5
 opencv_python==4.5.1.48
+paddle2onnx
