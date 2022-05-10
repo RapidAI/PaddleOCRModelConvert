@@ -48,7 +48,8 @@ echoColor ">>> finished converted"
 echoColor ">>> starting verity consistent"
 python tools/infer/predict_rec_vertify_same.py --image_dir=${test_img_path} \
                                                --rec_model_dir=${save_inference_path} \
-                                               --onnx_path ${save_onnx_path}
+                                               --onnx_path ${save_onnx_path} \
+                                               --use_gpu False
 echoColor ">>> finished converted"
 
 echoColor ">>> The final model has been saved "${save_onnx_path}
