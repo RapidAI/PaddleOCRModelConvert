@@ -1,4 +1,9 @@
 ### PaddleOCR release/v2.4 相关模型转换
+<p align="left">
+    <a href="https://aistudio.baidu.com/aistudio/projectdetail/3974957?shared=1" target="_blank">Open in AI Stuido</a>
+</p>
+
+
 - 本仓库主要是针对性地将[PaddleOCR/release/v2.4](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.4/doc/doc_ch/models_list.md)转换为onnx模型
 - 搭配[RapidOCR](https://github.com/RapidAI/RapidOCR)中相关推理代码使用更佳
 - **该项目是文本识别模型的转换，文本检测和方向分类部分并没有显示给出，不过可以参考shell脚本，也可以自行写出**
