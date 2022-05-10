@@ -10,10 +10,10 @@ function echoColor() {
 test_img_path="doc/imgs_words_en/word_10.png"
 
 # 下载好的推理模型地址
-save_inference_path="pretrained_models/en_number_mobile_v2.0_rec_infer"
+save_inference_path="pretrained_models/ch_PP-OCRv2_rec_infer"
 
 # 转换识别模型对应的字典
-rec_char_dict_path="ppocr/utils/en_dict.txt"
+rec_char_dict_path="ppocr/utils/ppocr_keys_v1.txt"
 #==============================================
 
 save_onnx_path="convert_model/${save_inference_path##*/}.onnx"
