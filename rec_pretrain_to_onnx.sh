@@ -40,8 +40,8 @@ echoColor ">>> finished converted"
 
 # onnx → dynamic onnx
 echoColor ">>> strarting change it to dynamic model"
-python rec_change_dynamic.py --onnx_path ${save_onnx_path} \
-                             --type_model rec
+python change_dynamic.py --onnx_path ${save_onnx_path} \
+                         --type_model rec
 echoColor ">>> finished converted"
 
 # verity onnx

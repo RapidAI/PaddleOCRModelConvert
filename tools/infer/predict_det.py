@@ -24,7 +24,7 @@ import cv2
 import numpy as np
 import time
 import sys
-
+import onnxruntime
 import tools.infer.utility as utility
 from ppocr.utils.logging import get_logger
 from ppocr.utils.utility import get_image_file_list, check_and_read_gif
@@ -101,6 +101,8 @@ class TextDetector(object):
             args, 'det', logger)  # paddle.jit.load(args.det_model_dir)
         # self.predictor.eval()
 
+        self.session = onnxruntime.InferenceSession(args.onnx_path)
+
     def order_points_clockwise(self, pts):
         """
         reference from: https://github.com/jrosebr1/imutils/blob/master/imutils/perspective.py
@@ -166,6 +168,10 @@ class TextDetector(object):
         img = img.copy()
         starttime = time.time()
 
+        input_name = self.session.get_inputs()[0].name
+        onnx_inputs = {input_name: img.astype(np.float32)}
+        onnx_outputs = self.session.run(None, onnx_inputs)[0]
+
         self.input_tensor.copy_from_cpu(img)
         self.predictor.run()
         outputs = []
@@ -187,6 +193,13 @@ class TextDetector(object):
         else:
             raise NotImplementedError
         self.predictor.try_shrink_memory()
+
+        rtol = 1e-3
+        atol = 1e-5
+        np.testing.assert_allclose(onnx_outputs, outputs[0],
+                                    rtol=rtol, atol=atol)
+        print(f'恭喜你，模型转换前后在{rtol}误差范围内一致！')
+
         post_result = self.postprocess_op(preds, shape_list)
         dt_boxes = post_result[0]['points']
         if self.det_algorithm == "SAST" and self.det_sast_polygon:
