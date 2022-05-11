@@ -20,17 +20,18 @@ sys.path.append(os.path.abspath(os.path.join(__dir__, '../..')))
 
 os.environ["FLAGS_allocator_strategy"] = 'auto_growth'
 
-import cv2
 import copy
-import numpy as np
 import math
 import time
 import traceback
 
+import cv2
+import numpy as np
+import onnxruntime
 import tools.infer.utility as utility
 from ppocr.postprocess import build_post_process
 from ppocr.utils.logging import get_logger
-from ppocr.utils.utility import get_image_file_list, check_and_read_gif
+from ppocr.utils.utility import check_and_read_gif, get_image_file_list
 
 logger = get_logger()
 
@@ -47,6 +48,8 @@ class TextClassifier(object):
         self.postprocess_op = build_post_process(postprocess_params)
         self.predictor, self.input_tensor, self.output_tensors = \
             utility.create_predictor(args, 'cls', logger)
+
+        self.session = onnxruntime.InferenceSession(args.onnx_path)
 
     def resize_norm_img(self, img):
         imgC, imgH, imgW = self.cls_image_shape
@@ -97,11 +100,23 @@ class TextClassifier(object):
                 norm_img_batch.append(norm_img)
             norm_img_batch = np.concatenate(norm_img_batch)
             norm_img_batch = norm_img_batch.copy()
+
+            input_name = self.session.get_inputs()[0].name
+            onnx_inputs = {input_name: norm_img_batch.astype(np.float32)}
+            onnx_outputs = self.session.run(None, onnx_inputs)[0]
+
             starttime = time.time()
             self.input_tensor.copy_from_cpu(norm_img_batch)
             self.predictor.run()
             prob_out = self.output_tensors[0].copy_to_cpu()
             self.predictor.try_shrink_memory()
+
+            rtol = 1e-3
+            atol = 1e-5
+            np.testing.assert_allclose(onnx_outputs, prob_out,
+                                       rtol=rtol, atol=atol)
+            print(f'恭喜你，模型转换前后在{rtol}误差范围内一致！')
+
             cls_result = self.postprocess_op(prob_out)
             elapse += time.time() - starttime
             for rno in range(len(cls_result)):
