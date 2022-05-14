@@ -7,8 +7,6 @@
 - 本仓库主要是针对性地将[PaddleOCR/release/v2.4](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.4/doc/doc_ch/models_list.md)转换为onnx模型
 - 搭配[RapidOCR](https://github.com/RapidAI/RapidOCR)中相关推理代码使用更佳
 
-### TODO
-- [ ] 最新出的[release/v2.5](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.5/doc/doc_ch/models_list.md)相关模型，尝试转换整理
 
 ### 运行环境
 - 操作系统： Linux / Mac
