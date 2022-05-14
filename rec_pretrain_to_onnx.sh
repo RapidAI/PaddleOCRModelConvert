@@ -5,31 +5,44 @@ function echoColor() {
     echo -e "\033[32m${1}\033[0m"
 }
 
+
+function download_model(){
+    cd pretrained_models
+
+    model_url=$1
+
+    tar_name=${model_url##*/}
+    model_dir=${tar_name%.*}
+    if [ ! -d "${model_dir}" ]; then
+        wget ${model_url}
+        tar xf ${tar_name} && rm ${tar_name}
+    fi
+
+    cd ..
+
+    echo ${model_dir}
+}
+
 #=============参数配置===========================
 # 测试图像，用于比较转换前后是否一致
-test_img_path="doc/imgs_words_en/word_10.png"
-
-echoColor ">>> Download the pretrain model"
-cd pretrained_models
-wget https://paddleocr.bj.bcebos.com/PP-OCRv2/chinese/ch_PP-OCRv2_rec_train.tar
-tar xvf ch_PP-OCRv2_rec_train.tar && rm ch_PP-OCRv2_rec_train.tar
-cd ..
-echoColor ">>> Download finished"
+test_img_path="doc/imgs_words/ch/word_1.jpg"
 
 # 转换模型对应的配置文件
-yml_path="configs/rec/ch_ppocr_v2.0/rec_chinese_lite_train_v2.0.yml"
+yml_path="configs/rec/PP-OCRv3/ch_PP-OCRv3_rec.yml"
+
+model_url="https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_train.tar"
+
+model_dir=$(download_model ${model_url})
 
 # 原始预训练模型
-raw_model_path="pretrained_models/ch_PP-OCRv2_rec_train/best_accuracy"
+raw_model_path="pretrained_models/${model_dir}/best_accuracy"
 
 # 转换识别模型对应的字典
-rec_char_dict_path="ppocr/utils/en_dict.txt"
+rec_char_dict_path="ppocr/utils/ppocr_keys_v1.txt"
 #==============================================
 
-save_infer_name=${raw_model_path#*/}
-save_infer_name=${save_infer_name%/*}
-save_inference_path="pretrained_models/${save_infer_name}"
-save_onnx_path="convert_model/${save_inference_path##*/}.onnx"
+save_inference_path="pretrained_models/${model_dir}"
+save_onnx_path="convert_model/${model_dir}.onnx"
 
 # raw → inference
 echoColor ">>> starting raw model → inference"
@@ -53,10 +66,10 @@ echoColor ">>> finished converted"
 
 # verity onnx
 echoColor ">>> starting verity consistent"
-python tools/infer/predict_rec_vertify_same.py --image_dir=${test_img_path} \
-                                               --rec_model_dir=${save_inference_path} \
-                                               --onnx_path ${save_onnx_path} \
-                                               --use_gpu False
+python tools/infer/predict_rec.py --image_dir=${test_img_path} \
+                                  --rec_model_dir=${save_inference_path} \
+                                  --onnx_path ${save_onnx_path} \
+                                  --use_gpu False
 echoColor ">>> finished converted"
 
 echoColor ">>> The final model has been saved "${save_onnx_path}

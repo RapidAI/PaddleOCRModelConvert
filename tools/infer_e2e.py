@@ -23,7 +23,7 @@ import sys
 
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(__dir__)
-sys.path.append(os.path.abspath(os.path.join(__dir__, '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(__dir__, '..')))
 
 os.environ["FLAGS_allocator_strategy"] = 'auto_growth'
 
@@ -34,7 +34,7 @@ import paddle
 from ppocr.data import create_operators, transform
 from ppocr.modeling.architectures import build_model
 from ppocr.postprocess import build_post_process
-from ppocr.utils.save_load import init_model
+from ppocr.utils.save_load import load_model
 from ppocr.utils.utility import get_image_file_list
 import tools.program as program
 
@@ -68,7 +68,7 @@ def main():
     # build model
     model = build_model(config['Architecture'])
 
-    init_model(config, model, logger)
+    load_model(config, model)
 
     # build post process
     post_process_class = build_post_process(config['PostProcess'],
@@ -104,7 +104,7 @@ def main():
             preds = model(images)
             post_result = post_process_class(preds, shape_list)
             points, strs = post_result['points'], post_result['texts']
-            # write resule
+            # write result
             dt_boxes_json = []
             for poly, str in zip(points, strs):
                 tmp_json = {"transcription": str}

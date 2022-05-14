@@ -5,22 +5,40 @@ function echoColor() {
     echo -e "\033[32m${1}\033[0m"
 }
 
+
+function download_model(){
+    cd pretrained_models
+
+    model_url=$1
+
+    tar_name=${model_url##*/}
+    model_dir=${tar_name%.*}
+    if [ ! -d "${model_dir}" ]; then
+        wget ${model_url}
+        tar xf ${tar_name} && rm ${tar_name}
+    fi
+
+    cd ..
+
+    echo ${model_dir}
+}
+
 #=============参数配置=============================
 # 测试图像，用于比较转换前后是否一致
 test_img_path="doc/imgs/1.jpg"
 
-echoColor ">>> Download the pretrain model"
-cd pretrained_models
-wget https://paddleocr.bj.bcebos.com/PP-OCRv2/chinese/ch_PP-OCRv2_det_infer.tar
-tar xvf ch_PP-OCRv2_det_infer.tar && rm ch_PP-OCRv2_det_infer.tar
-cd ..
-echoColor ">>> Download finished"
+model_url="https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_det_infer.tar"
+
+model_dir=$(download_model ${model_url})
+
+# 原始预训练模型
+raw_model_path="pretrained_models/${model_dir}/student"
 
 # 下载好的推理模型地址
-save_inference_path="pretrained_models/ch_PP-OCRv2_det_infer"
+save_inference_path="pretrained_models/${model_dir}"
 #==============================================
 
-save_onnx_path="convert_model/${save_inference_path##*/}.onnx"
+save_onnx_path="convert_model/${model_dir}.onnx"
 
 # inference → onnx
 echoColor ">>> starting inference → onnx"

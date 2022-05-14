@@ -16,22 +16,21 @@ import sys
 
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(__dir__)
-sys.path.append(os.path.abspath(os.path.join(__dir__, '../..')))
+sys.path.insert(0, os.path.abspath(os.path.join(__dir__, '../..')))
 
 os.environ["FLAGS_allocator_strategy"] = 'auto_growth'
 
+import cv2
 import copy
+import numpy as np
 import math
 import time
 import traceback
-
-import cv2
-import numpy as np
 import onnxruntime
 import tools.infer.utility as utility
 from ppocr.postprocess import build_post_process
 from ppocr.utils.logging import get_logger
-from ppocr.utils.utility import check_and_read_gif, get_image_file_list
+from ppocr.utils.utility import get_image_file_list, check_and_read_gif
 
 logger = get_logger()
 
@@ -46,9 +45,9 @@ class TextClassifier(object):
             "label_list": args.label_list,
         }
         self.postprocess_op = build_post_process(postprocess_params)
-        self.predictor, self.input_tensor, self.output_tensors = \
+        self.predictor, self.input_tensor, self.output_tensors, _ = \
             utility.create_predictor(args, 'cls', logger)
-
+        self.use_onnx = args.use_onnx
         self.session = onnxruntime.InferenceSession(args.onnx_path)
 
     def resize_norm_img(self, img):
@@ -87,9 +86,11 @@ class TextClassifier(object):
         batch_num = self.cls_batch_num
         elapse = 0
         for beg_img_no in range(0, img_num, batch_num):
+
             end_img_no = min(img_num, beg_img_no + batch_num)
             norm_img_batch = []
             max_wh_ratio = 0
+            starttime = time.time()
             for ino in range(beg_img_no, end_img_no):
                 h, w = img_list[indices[ino]].shape[0:2]
                 wh_ratio = w * 1.0 / h
@@ -101,15 +102,19 @@ class TextClassifier(object):
             norm_img_batch = np.concatenate(norm_img_batch)
             norm_img_batch = norm_img_batch.copy()
 
-            input_name = self.session.get_inputs()[0].name
-            onnx_inputs = {input_name: norm_img_batch.astype(np.float32)}
+            onnx_inputs = {self.session.get_inputs()[0].name: norm_img_batch.astype(np.float32)}
             onnx_outputs = self.session.run(None, onnx_inputs)[0]
 
-            starttime = time.time()
-            self.input_tensor.copy_from_cpu(norm_img_batch)
-            self.predictor.run()
-            prob_out = self.output_tensors[0].copy_to_cpu()
-            self.predictor.try_shrink_memory()
+            if self.use_onnx:
+                input_dict = {}
+                input_dict[self.input_tensor.name] = norm_img_batch
+                outputs = self.predictor.run(self.output_tensors, input_dict)
+                prob_out = outputs[0]
+            else:
+                self.input_tensor.copy_from_cpu(norm_img_batch)
+                self.predictor.run()
+                prob_out = self.output_tensors[0].copy_to_cpu()
+                self.predictor.try_shrink_memory()
 
             rtol = 1e-3
             atol = 1e-5
@@ -144,20 +149,13 @@ def main(args):
         img_list.append(img)
     try:
         img_list, cls_res, predict_time = text_classifier(img_list)
-    except:
+    except Exception as E:
         logger.info(traceback.format_exc())
-        logger.info(
-            "ERROR!!!! \n"
-            "Please read the FAQ：https://github.com/PaddlePaddle/PaddleOCR#faq \n"
-            "If your model has tps module:  "
-            "TPS does not support variable shape.\n"
-            "Please set --rec_image_shape='3,32,100' and --rec_char_type='en' ")
+        logger.info(E)
         exit()
     for ino in range(len(img_list)):
         logger.info("Predicts of {}:{}".format(valid_image_file_list[ino],
                                                cls_res[ino]))
-    logger.info("Total predict time for {} images, cost: {:.3f}".format(
-        len(img_list), predict_time))
 
 
 if __name__ == "__main__":
