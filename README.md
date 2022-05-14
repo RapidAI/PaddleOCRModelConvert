@@ -26,15 +26,15 @@
 直接运行一下对应脚本即可
 - 推理模型转换
     ```shell
-    bash det_inference_to_onnx.sh
+    $ bash det_inference_to_onnx.sh
     # bash cls_inference_to_onnx.sh  # 这个模型转换后误差较大
-    bash rec_inference_to_onnx.sh
+    $ bash rec_inference_to_onnx.sh
     ```
 - 预训练模型转换
     ```shell
-    bash det_pretrain_to_onnx.sh
-    bash cls_pretrain_to_onnx.sh
-    bash rec_pretrain_to_onnx.sh  # 这个模型提供不完整
+    $ bash det_pretrain_to_onnx.sh
+    $ bash cls_pretrain_to_onnx.sh
+    $ bash rec_pretrain_to_onnx.sh  # 这个模型提供不完整
     ```
 - 如果遇到`rec_inference_to_onnx.sh: line 3: $'\r': command not found`类似错误
     ```bash
