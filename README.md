@@ -34,7 +34,7 @@
     ```shell
     $ bash det_pretrain_to_onnx.sh
     $ bash cls_pretrain_to_onnx.sh
-    $ bash rec_pretrain_to_onnx.sh  # 这个模型提供不完整
+    $ bash rec_pretrain_to_onnx.sh
     ```
 - 如果遇到`rec_inference_to_onnx.sh: line 3: $'\r': command not found`类似错误
     ```bash
