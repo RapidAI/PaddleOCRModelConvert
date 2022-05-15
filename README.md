@@ -1,4 +1,4 @@
-### PaddleOCR release/v2.5 相关模型转换
+### PaddleOCR v3 相关模型转换
 <p align="left">
     <a href="https://aistudio.baidu.com/aistudio/projectdetail/3974957?_=1652277622041&shared=1" target="_blank">Open in AI Stuido</a>
 </p>
