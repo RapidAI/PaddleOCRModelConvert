@@ -28,7 +28,7 @@ function download_model(){
 test_img_path="doc/imgs_words/ch/word_1.jpg"
 
 # 转换模型对应的配置文件
-yml_path="configs/rec/PP-OCRv3/ch_PP-OCRv3_rec.yml"
+yml_path="configs/rec/PP-OCRv3/ch_PP-OCRv3_rec_distillation.yml"
 
 model_url="https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_train.tar"
 
@@ -45,12 +45,18 @@ save_inference_path="pretrained_models/${model_dir}"
 save_onnx_path="convert_model/${model_dir}.onnx"
 
 # raw → inference
+# 该模型会在pretrain_models下生成Student和Teacher两个目录
 echoColor ">>> starting raw model → inference"
 python3 tools/export_model.py -c ${yml_path} -o Global.pretrained_model=${raw_model_path} Global.load_static_weights=False Global.save_inference_dir=${save_inference_path}
 echoColor ">>> finished converted"
 
 # inference → onnx
 echoColor ">>> starting inference → onnx"
+
+# 在这里请单独指定具体转换那个目录下的Student/Teacher
+# save_inference_path="pretrained_models/ch_PP-OCRv3_rec_train/Teacher"
+# save_onnx_path="convert_model/ch_PP-OCRv3_rec_train_teacher.onnx"
+
 paddle2onnx --model_dir ${save_inference_path} \
             --model_filename inference.pdmodel \
             --params_filename inference.pdiparams \
