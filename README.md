@@ -23,26 +23,26 @@
   ```
 
 ### 使用步骤
-直接运行一下对应脚本即可
-- 推理模型转换
-    ```shell
-    $ bash det_inference_to_onnx.sh
-    # bash cls_inference_to_onnx.sh  # 这个模型转换后误差较大
-    $ bash rec_inference_to_onnx.sh
-    ```
-- 预训练模型转换
-    ```shell
-    $ bash det_pretrain_to_onnx.sh
-    $ bash cls_pretrain_to_onnx.sh
-    $ bash rec_pretrain_to_onnx.sh
-    ```
-- 如果遇到`rec_inference_to_onnx.sh: line 3: $'\r': command not found`类似错误
-    ```bash
-    $ vi rec_inference_to_onnx.sh
+1. 直接运行一下对应脚本即可
+    - 推理模型转换
+        ```shell
+        $ bash det_inference_to_onnx.sh
+        # bash cls_inference_to_onnx.sh  # 这个模型转换后误差较大
+        $ bash rec_inference_to_onnx.sh
+        ```
+    - 预训练模型转换
+        ```shell
+        $ bash det_pretrain_to_onnx.sh
+        $ bash cls_pretrain_to_onnx.sh
+        $ bash rec_pretrain_to_onnx.sh
+        ```
+    - 如果遇到`rec_inference_to_onnx.sh: line 3: $'\r': command not found`类似错误
+        ```bash
+        $ vi rec_inference_to_onnx.sh
 
-    # vi中执行以下命令即可
-    # :set ff=unix
-    # :wq
-    ```
-3. 最终转换后的模型会在`convert_model`目录下
-4. 可以移步到[RapidOCR部分的python目录](https://github.com/RapidAI/RapidOCR/tree/main/python/onnxruntime_infer)，替换相应模型即可
+        # vi中执行以下命令即可
+        # :set ff=unix
+        # :wq
+        ```
+2. 最终转换后的模型会在`convert_model`目录下
+3. 可以移步到[RapidOCR部分的python目录](https://github.com/RapidAI/RapidOCR/tree/main/python/onnxruntime_infer)，替换相应模型即可
