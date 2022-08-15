@@ -1,8 +1,6 @@
-# !/usr/bin/env python
 # -*- encoding: utf-8 -*-
-# @File: vertify_convert_model.py
-# @Time: 2021/01/05 16:49:06
-# @Author: Max
+# @Author: SWHL
+# @Contact: liekkaskono@163.com
 import argparse
 
 import numpy as np
@@ -34,7 +32,6 @@ if __name__ == '__main__':
                         choices=['rec', 'det', 'cls'],
                         default='det')
     args = parser.parse_args()
-
 
     if args.type_model == 'det':
         x = np.random.rand(1, 3, 640, 480)

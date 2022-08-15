@@ -3,7 +3,6 @@
     <a href="https://aistudio.baidu.com/aistudio/projectdetail/3974957?_=1652277622041&shared=1" target="_blank">Open in AI Stuido</a>
 </p>
 
-
 - 本仓库主要是针对性地将[PaddleOCR/release/v2.5](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.5/doc/doc_ch/models_list.md)转换为onnx模型
 - 搭配[RapidOCR](https://github.com/RapidAI/RapidOCR)中相关推理代码使用更佳
 
@@ -46,3 +45,7 @@
         ```
 2. 最终转换后的模型会在`convert_model`目录下
 3. 可以移步到[RapidOCR部分的python目录](https://github.com/RapidAI/RapidOCR/tree/main/python/onnxruntime_infer)，替换相应模型即可
+
+### 更新日志
+#### 2022-08-15 update:
+- 将识别模型的字典写入到onnx模型中的meta中，便于后续分发。

@@ -49,6 +49,12 @@ paddle2onnx --model_dir ${save_inference_path} \
             --opset_version 12
 echoColor ">>> finished converted"
 
+# 将字典文件写入到onnx的metadata中
+echoColor ">>> save the character dict to the onnx meta"
+key_path="ppocr/utils/ppocr_keys_v1.txt"
+python save_dict_meta.py --onnx_path ${save_onnx_path} \
+                         --key_path ${key_path}
+
 # onnx → dynamic onnx
 echoColor ">>> strarting change it to dynamic model"
 python change_dynamic.py --onnx_path ${save_onnx_path} \

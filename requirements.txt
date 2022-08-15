@@ -12,3 +12,4 @@ paddlepaddle
 visualdl==2.0.5
 opencv_python==4.5.1.48
 paddle2onnx
+onnx
