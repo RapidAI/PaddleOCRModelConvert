@@ -1,6 +1,6 @@
 ### PaddleOCR v3 相关模型转换
 <p align="left">
-    <a href="https://aistudio.baidu.com/aistudio/projectdetail/3974957?_=1652277622041&shared=1" target="_blank">Open in AI Stuido</a>
+    <a href="https://aistudio.baidu.com/aistudio/projectdetail/3974957?_=1652277622041&shared=1"><img src="https://img.shields.io/badge/PP-Open in AI Studio-blue.svg"></a>
 </p>
 
 - 本仓库主要是针对性地将[PaddleOCR/release/v2.5](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.5/doc/doc_ch/models_list.md)转换为onnx模型
