@@ -20,7 +20,7 @@ Architecture:
   algorithm: DB
   Transform:
   Backbone:
-    name: ResNet
+    name: ResNet_vd
     layers: 50
   Neck:
     name: DBFPN
@@ -98,7 +98,7 @@ Train:
     shuffle: True
     drop_last: False
     batch_size_per_card: 16
-    num_workers: 8
+    num_workers: 4
 
 Eval:
   dataset:

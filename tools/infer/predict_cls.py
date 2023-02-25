@@ -26,11 +26,11 @@ import numpy as np
 import math
 import time
 import traceback
-import onnxruntime
+
 import tools.infer.utility as utility
 from ppocr.postprocess import build_post_process
 from ppocr.utils.logging import get_logger
-from ppocr.utils.utility import get_image_file_list, check_and_read_gif
+from ppocr.utils.utility import get_image_file_list, check_and_read
 
 logger = get_logger()
 
@@ -48,7 +48,6 @@ class TextClassifier(object):
         self.predictor, self.input_tensor, self.output_tensors, _ = \
             utility.create_predictor(args, 'cls', logger)
         self.use_onnx = args.use_onnx
-        self.session = onnxruntime.InferenceSession(args.onnx_path)
 
     def resize_norm_img(self, img):
         imgC, imgH, imgW = self.cls_image_shape
@@ -102,9 +101,6 @@ class TextClassifier(object):
             norm_img_batch = np.concatenate(norm_img_batch)
             norm_img_batch = norm_img_batch.copy()
 
-            onnx_inputs = {self.session.get_inputs()[0].name: norm_img_batch.astype(np.float32)}
-            onnx_outputs = self.session.run(None, onnx_inputs)[0]
-
             if self.use_onnx:
                 input_dict = {}
                 input_dict[self.input_tensor.name] = norm_img_batch
@@ -115,13 +111,6 @@ class TextClassifier(object):
                 self.predictor.run()
                 prob_out = self.output_tensors[0].copy_to_cpu()
                 self.predictor.try_shrink_memory()
-
-            rtol = 1e-3
-            atol = 1e-5
-            np.testing.assert_allclose(onnx_outputs, prob_out,
-                                       rtol=rtol, atol=atol)
-            print(f'恭喜你，模型转换前后在{rtol}误差范围内一致！')
-
             cls_result = self.postprocess_op(prob_out)
             elapse += time.time() - starttime
             for rno in range(len(cls_result)):
@@ -139,7 +128,7 @@ def main(args):
     valid_image_file_list = []
     img_list = []
     for image_file in image_file_list:
-        img, flag = check_and_read_gif(image_file)
+        img, flag, _ = check_and_read(image_file)
         if not flag:
             img = cv2.imread(image_file)
         if img is None:

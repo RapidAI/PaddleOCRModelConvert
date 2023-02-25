@@ -24,6 +24,7 @@ import six
 import cv2
 import numpy as np
 import math
+from PIL import Image
 
 
 class DecodeImage(object):
@@ -63,39 +64,6 @@ class DecodeImage(object):
         if self.channel_first:
             img = img.transpose((2, 0, 1))
 
-        data['image'] = img
-        return data
-
-
-class NRTRDecodeImage(object):
-    """ decode image """
-
-    def __init__(self, img_mode='RGB', channel_first=False, **kwargs):
-        self.img_mode = img_mode
-        self.channel_first = channel_first
-
-    def __call__(self, data):
-        img = data['image']
-        if six.PY2:
-            assert type(img) is str and len(
-                img) > 0, "invalid input 'img' in DecodeImage"
-        else:
-            assert type(img) is bytes and len(
-                img) > 0, "invalid input 'img' in DecodeImage"
-        img = np.frombuffer(img, dtype='uint8')
-
-        img = cv2.imdecode(img, 1)
-
-        if img is None:
-            return None
-        if self.img_mode == 'GRAY':
-            img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-        elif self.img_mode == 'RGB':
-            assert img.shape[2] == 3, 'invalid shape of image[%s]' % (img.shape)
-            img = img[:, :, ::-1]
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        if self.channel_first:
-            img = img.transpose((2, 0, 1))
         data['image'] = img
         return data
 
@@ -238,9 +206,12 @@ class DetResizeForTest(object):
     def __init__(self, **kwargs):
         super(DetResizeForTest, self).__init__()
         self.resize_type = 0
+        self.keep_ratio = False
         if 'image_shape' in kwargs:
             self.image_shape = kwargs['image_shape']
             self.resize_type = 1
+            if 'keep_ratio' in kwargs:
+                self.keep_ratio = kwargs['keep_ratio']
         elif 'limit_side_len' in kwargs:
             self.limit_side_len = kwargs['limit_side_len']
             self.limit_type = kwargs.get('limit_type', 'min')
@@ -254,6 +225,8 @@ class DetResizeForTest(object):
     def __call__(self, data):
         img = data['image']
         src_h, src_w, _ = img.shape
+        if sum([src_h, src_w]) < 64:
+            img = self.image_padding(img)
 
         if self.resize_type == 0:
             # img, shape = self.resize_image_type0(img)
@@ -267,9 +240,19 @@ class DetResizeForTest(object):
         data['shape'] = np.array([src_h, src_w, ratio_h, ratio_w])
         return data
 
+    def image_padding(self, im, value=0):
+        h, w, c = im.shape
+        im_pad = np.zeros((max(32, h), max(32, w), c), np.uint8) + value
+        im_pad[:h, :w, :] = im
+        return im_pad
+
     def resize_image_type1(self, img):
         resize_h, resize_w = self.image_shape
         ori_h, ori_w = img.shape[:2]  # (h, w, c)
+        if self.keep_ratio is True:
+            resize_w = ori_w * resize_h / ori_h
+            N = math.ceil(resize_w / 32)
+            resize_w = N * 32
         ratio_h = float(resize_h) / ori_h
         ratio_w = float(resize_w) / ori_w
         img = cv2.resize(img, (int(resize_w), int(resize_h)))
@@ -466,3 +449,76 @@ class KieResize(object):
         points[:, 0::2] = np.clip(points[:, 0::2], 0, img_shape[1])
         points[:, 1::2] = np.clip(points[:, 1::2], 0, img_shape[0])
         return points
+
+
+class SRResize(object):
+    def __init__(self,
+                 imgH=32,
+                 imgW=128,
+                 down_sample_scale=4,
+                 keep_ratio=False,
+                 min_ratio=1,
+                 mask=False,
+                 infer_mode=False,
+                 **kwargs):
+        self.imgH = imgH
+        self.imgW = imgW
+        self.keep_ratio = keep_ratio
+        self.min_ratio = min_ratio
+        self.down_sample_scale = down_sample_scale
+        self.mask = mask
+        self.infer_mode = infer_mode
+
+    def __call__(self, data):
+        imgH = self.imgH
+        imgW = self.imgW
+        images_lr = data["image_lr"]
+        transform2 = ResizeNormalize(
+            (imgW // self.down_sample_scale, imgH // self.down_sample_scale))
+        images_lr = transform2(images_lr)
+        data["img_lr"] = images_lr
+        if self.infer_mode:
+            return data
+
+        images_HR = data["image_hr"]
+        label_strs = data["label"]
+        transform = ResizeNormalize((imgW, imgH))
+        images_HR = transform(images_HR)
+        data["img_hr"] = images_HR
+        return data
+
+
+class ResizeNormalize(object):
+    def __init__(self, size, interpolation=Image.BICUBIC):
+        self.size = size
+        self.interpolation = interpolation
+
+    def __call__(self, img):
+        img = img.resize(self.size, self.interpolation)
+        img_numpy = np.array(img).astype("float32")
+        img_numpy = img_numpy.transpose((2, 0, 1)) / 255
+        return img_numpy
+
+
+class GrayImageChannelFormat(object):
+    """
+    format gray scale image's channel: (3,h,w) -> (1,h,w)
+    Args:
+        inverse: inverse gray image 
+    """
+
+    def __init__(self, inverse=False, **kwargs):
+        self.inverse = inverse
+
+    def __call__(self, data):
+        img = data['image']
+        img_single_channel = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img_expanded = np.expand_dims(img_single_channel, 0)
+
+        if self.inverse:
+            data['image'] = np.abs(img_expanded - 1)
+        else:
+            data['image'] = img_expanded
+
+        data['src_image'] = img
+        return data
