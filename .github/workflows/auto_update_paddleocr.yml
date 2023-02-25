@@ -29,15 +29,15 @@ jobs:
 
     - name: Clone and Clean PaddleOCR
       run: |
-        git clone https://github.com/PaddlePaddle/PaddleOCR.git ${{ SAVE_DIR }}
+        git clone https://github.com/PaddlePaddle/PaddleOCR.git $SAVE_DIR
 
         mkdir temp
 
         rm -r doc ppocr tools configs
 
-        mv ${{ SAVE_DIR }}/configs ${{ SAVE_DIR }}/doc ${{ SAVE_DIR }}/ppocr ${{ SAVE_DIR }}/tools -t temp
+        mv $SAVE_DIR /configs $SAVE_DIR /doc $SAVE_DIR /ppocr $SAVE_DIR /tools -t temp
 
-        rm -r ${{ SAVE_DIR }}
+        rm -r $SAVE_DIR
 
         ls
 
