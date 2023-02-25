@@ -16,7 +16,6 @@ jobs:
     - name: Set SSH Environment
       env:
         DEPLOY_KEYS_PADDLE: ${{ secrets.DEPLOY_KEYS_PADDLE }}
-        SAVE_DIR: Paddle
       run: |
         mkdir -p ~/.ssh/
         echo "$DEPLOY_KEYS_PADDLE" > ~/.ssh/id_rsa
@@ -27,6 +26,8 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Clone and Clean PaddleOCR
+      env:
+        SAVE_DIR: Paddle
       run: |
         git clone https://github.com/PaddlePaddle/PaddleOCR.git ${{ SAVE_DIR }}
 
