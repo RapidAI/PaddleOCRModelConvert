@@ -16,6 +16,7 @@ jobs:
     - name: Set SSH Environment
       env:
         DEPLOY_KEYS_PADDLE: ${{ secrets.DEPLOY_KEYS_PADDLE }}
+        SAVE_DIR: Paddle
       run: |
         mkdir -p ~/.ssh/
         echo "$DEPLOY_KEYS_PADDLE" > ~/.ssh/id_rsa
@@ -27,13 +28,15 @@ jobs:
 
     - name: Clone and Clean PaddleOCR
       run: |
-        git clone https://github.com/PaddlePaddle/PaddleOCR.git PaddleOCR
+        git clone https://github.com/PaddlePaddle/PaddleOCR.git ${{ SAVE_DIR }}
 
         mkdir temp
 
-        mv PaddleOCR/configs PaddleOCR/doc PaddleOCR/ppocr PaddleOCR/tools -t temp
+        rm -r doc ppocr tools configs
 
-        rm -r PaddleOCR
+        mv ${{ SAVE_DIR }}/configs ${{ SAVE_DIR }}/doc ${{ SAVE_DIR }}/ppocr ${{ SAVE_DIR }}/tools -t temp
+
+        rm -r ${{ SAVE_DIR }}
 
         ls
 
