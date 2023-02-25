@@ -28,7 +28,7 @@ jobs:
 
         mkdir temp
 
-        mv PaddleOCR/configs doc ppocr tools -t temp
+        mv PaddleOCR/configs PaddleOCR/doc PaddleOCR/ppocr PaddleOCR/tools -t temp
 
         rm -r PaddleOCR
 
