@@ -39,7 +39,6 @@
         ```bash
         $ vi rec_inference_to_onnx.sh
 
-<<<<<<< HEAD
         # vi中执行以下命令即可
         # :set ff=unix
         # :wq
@@ -50,11 +49,3 @@
 ### 更新日志
 #### 2022-08-15 update:
 - 将识别模型的字典写入到onnx模型中的meta中，便于后续分发。
-=======
-    # vi中执行以下命令即可
-    # :set ff=unix
-    # :wq
-    ```
-3. 最终转换后的模型会在`convert_model`目录下
-4. 可以移步到[RapidOCR部分的python目录](https://github.com/RapidAI/RapidOCR/tree/main/python/onnxruntime_infer)，替换相应模型即可
->>>>>>> 7f7749253cdff531f4af1c7b2972ccdd04657511
