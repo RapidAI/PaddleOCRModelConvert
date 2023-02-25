@@ -54,4 +54,4 @@ jobs:
         git remote add origin git@github.com:RapidAI/PaddleOCRModelConverter.git
 
         git add .
-        git commit -m 'Actions auto update' && git push -f origin ${SUBMMIT_BRANCH} || echo "No changes to commit"
+        git commit -m 'Actions auto update' && git push -u origin ${SUBMMIT_BRANCH} || echo "No changes to commit"
