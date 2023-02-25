@@ -1,0 +1,50 @@
+# This is a basic workflow to help you get started with Actions
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *'  # 每天上午9点，自动开始执行
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set SSH Environment
+      env:
+        DEPLOY_KEYS_PADDLE: ${{ secrets.DEPLOY_KEYS_PADDLE }}
+      run: |
+        mkdir -p ~/.ssh/
+        echo "$DEPLOY_KEYS_PADDLE" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
+
+    - name: Clone and Clean PaddleOCR
+      run: |
+        git clone https://github.com/PaddlePaddle/PaddleOCR.git PaddleOCR
+
+        mkdir temp
+
+        mv PaddleOCR/configs doc ppocr tools -t temp
+
+        rm -r PaddleOCR
+
+        ls
+
+        ls temp/
+
+        mv temp/* .
+        rm -r temp
+
+        ls
+
+        git config --global user.name "SWHL"
+        git config --global user.email "liekkaskono@163.com"
+        git remote remove origin
+        git remote add origin git@github.com:RapidAI/PaddleOCRModelConverter.git
+
+        git add .
+        git commit -m 'Actions auto update' && git push -f origin ${SUBMMIT_BRANCH} || echo "No changes to commit"
