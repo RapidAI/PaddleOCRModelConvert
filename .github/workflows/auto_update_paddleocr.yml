@@ -35,7 +35,7 @@ jobs:
 
         rm -r doc ppocr tools configs
 
-        mv $SAVE_DIR /configs $SAVE_DIR /doc $SAVE_DIR /ppocr $SAVE_DIR /tools -t temp
+        mv $SAVE_DIR/configs $SAVE_DIR/doc $SAVE_DIR/ppocr $SAVE_DIR/tools -t temp
 
         rm -r $SAVE_DIR
 
