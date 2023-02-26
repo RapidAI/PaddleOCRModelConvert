@@ -33,7 +33,6 @@ jobs:
 
       - name: Run setup.py
         run: |
-          cd ocrweb
           pip install -r requirements.txt
           pip install wheel
 
