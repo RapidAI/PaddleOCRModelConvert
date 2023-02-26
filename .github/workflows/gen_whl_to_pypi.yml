@@ -22,15 +22,6 @@ jobs:
           python-version: '3.7'
           architecture: 'x64'
 
-      - name: Set SSH Environment
-        env:
-          DEPLOY_KEYS: ${{ secrets.GEN_PYTHON_SDK }}
-        run: |
-          mkdir -p ~/.ssh/
-          echo "$DEPLOY_KEYS" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
-
       - name: Run setup.py
         run: |
           pip install -r requirements.txt
@@ -42,5 +33,5 @@ jobs:
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@v1.5.0
         with:
-          password: ${{ secrets.RAPIDOCR_OPENVINO }}
+          password: ${{ secrets.UPLOAD_PYPI }}
           packages_dir: dist/
