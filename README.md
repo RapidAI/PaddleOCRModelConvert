@@ -1,6 +1,9 @@
 ### paddleocr_convert
-<p align="left">
-    <a href="https://aistudio.baidu.com/aistudio/projectdetail/3974957?_=1652277622041&shared=1"><img src="https://img.shields.io/badge/PP-Open in AI Studio-blue.svg"></a>
+<p>
+    <a href=""><img src="https://img.shields.io/badge/Python->=3.7,<=3.10-aff.svg"></a>
+    <a href=""><img src="https://img.shields.io/badge/OS-Linux%2C%20Win%2C%20Mac-pink.svg"></a>
+    <a href="https://pypi.org/project/paddleocr_convert/"><img alt="PyPI" src="https://img.shields.io/pypi/v/paddleocr_convert"></a>
+    <a href="https://pepy.tech/project/paddleocr_convert"><img src="https://static.pepy.tech/personalized-badge/paddleocr_convert?period=total&units=abbreviation&left_color=grey&right_color=blue&left_text=Downloads"></a>
 </p>
 
 - 本仓库主要是针对性地将[PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md)转换为onnx模型

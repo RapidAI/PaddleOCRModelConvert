@@ -60,7 +60,7 @@ setuptools.setup(
     name=MODULE_NAME,
     version=VERSION_NUM,
     platforms='Any',
-    description='A cross platform OCR Library based on OnnxRuntime.',
+    description='Tool for converting the PaddleOCR model to onnx format.',
     long_description=get_readme(),
     long_description_content_type='text/markdown',
     author='SWHL',
