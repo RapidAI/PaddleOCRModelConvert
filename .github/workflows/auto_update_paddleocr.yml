@@ -33,10 +33,12 @@ jobs:
         git clone https://github.com/PaddlePaddle/PaddleOCR.git $SAVE_DIR
 
         mkdir temp
+        mkdir temp/doc
 
         rm -r doc ppocr tools configs
 
-        mv $SAVE_DIR/configs $DOC_DIR/imgs $DOC_DIR/imgs_en $DOC_DIR/imgs_words $DOC_DIR/imgs_words_en $SAVE_DIR/ppocr $SAVE_DIR/tools -t temp
+        mv $SAVE_DIR/configs $SAVE_DIR/ppocr $SAVE_DIR/tools -t temp
+        mv $DOC_DIR/imgs $DOC_DIR/imgs_en $DOC_DIR/imgs_words $DOC_DIR/imgs_words_en -t temp/doc
 
         rm -r $SAVE_DIR
 
