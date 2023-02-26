@@ -15,6 +15,7 @@ jobs:
     env:
       DEPLOY_KEYS_PADDLE: ${{ secrets.DEPLOY_KEYS_PADDLE }}
       SAVE_DIR: Paddle
+      DOC_DIR: Paddle/doc
 
     steps:
     - name: Set SSH Environment
@@ -35,7 +36,7 @@ jobs:
 
         rm -r doc ppocr tools configs
 
-        mv $SAVE_DIR/configs $SAVE_DIR/doc $SAVE_DIR/ppocr $SAVE_DIR/tools -t temp
+        mv $SAVE_DIR/configs $DOC_DIR/imgs $DOC_DIR/imgs_en $DOC_DIR/imgs_words $DOC_DIR/imgs_words_en $SAVE_DIR/ppocr $SAVE_DIR/tools -t temp
 
         rm -r $SAVE_DIR
 
