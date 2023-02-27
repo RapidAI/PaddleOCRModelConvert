@@ -9,7 +9,7 @@
 - 本仓库主要是针对性地将[PaddleOCR模型](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md)转换为ONNX格式。
 - **注意**：
   - 输入是模型的url，输出即是转换后的ONNX模型。
-  - 如果是识别模型，需要提供对应字典的原始txt路径，用来将字典写入到onnx模型中
+  - 如果是识别模型，需要提供对应字典的原始txt路径（**打开github中txt文件，点击右上角raw之后的路径**），用来将字典写入到onnx模型中
 - 搭配[RapidOCR](https://github.com/RapidAI/RapidOCR)中相关推理代码使用
 
 
