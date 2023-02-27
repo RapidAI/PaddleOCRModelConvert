@@ -6,7 +6,7 @@
     <a href="https://pepy.tech/project/paddleocr_convert"><img src="https://static.pepy.tech/personalized-badge/paddleocr_convert?period=total&units=abbreviation&left_color=grey&right_color=blue&left_text=Downloads"></a>
 </p>
 
-- 本仓库主要是针对性地将[PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md)转换为onnx模型
+- 本仓库主要是针对性地将[PaddleOCR模型](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md)转换为ONNX格式。
 - **注意**：
   - 输入是模型的url，输出即是转换后的ONNX模型。
   - 如果是识别模型，需要提供对应字典的原始txt路径，用来将字典写入到onnx模型中
@@ -57,8 +57,48 @@
 
     converter(url, save_dir, txt_url=txt_url)
     ```
-
- 可以移步到[RapidOCR部分的python目录](https://github.com/RapidAI/RapidOCR/tree/main/python/onnxruntime_infer)，替换相应模型即可
+4. 使用模型方法：
+    1. 下载RapidOCR仓库源码（[RapidOCR](https://github.com/RapidAI/RapidOCR)）
+    2. 切换到**python**目录下
+        ```text
+        .
+        ├── demo.py
+        ├── inference_results
+        ├── rapidocr_onnxruntime
+        │    ├── ch_ppocr_v2_cls
+        │    ├── ch_ppocr_v3_det
+        │    ├── ch_ppocr_v3_rec
+        │    ├── config.yaml       # 这个是配置文件
+        │    ├── __init__.py
+        │    ├── models           # 新转换的模型放在这里
+        │    │     ├── ch_ppocr_mobile_v2.0_cls_infer.onnx
+        │    │     ├── ch_PP-OCRv3_det_infer.onnx
+        │    │     └── ch_PP-OCRv3_rec_infer.onnx
+        │    ├── rapid_ocr_api.py
+        │    └── utils.py
+        ├── rapidocr_openvino
+        ├── rapid_structure
+        ├── README.md
+        ├── requirements.txt
+        ├── resources
+        ├── setup_onnxruntime.py
+        ├── setup_openvino.py
+        └──  tests
+        ```
+    3. 更改配置文件**config.yaml**中对应模型路径即可
+        ```yaml
+        Det:
+            model_path: models/ch_PP-OCRv3_det_infer.onnx
+        Cls:
+            model_path: models/ch_ppocr_mobile_v2.0_cls_infer.onnx
+        Rec:
+            model_path: models/ch_PP-OCRv3_rec_infer.onnx
+        ```
+    4. 运行demo
+        ```bash
+        # RapidOCR/python
+        python demo.py
+        ```
 
 
 ### 更新日志
