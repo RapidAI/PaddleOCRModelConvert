@@ -36,9 +36,28 @@ class PaddleOCRModelConvert():
         os.system(shell_str)
         print(f'Successfully convert model to {save_onnx_path}')
 
+        # 是否需要手动转动态shape
+        self.change_to_dynamic(save_onnx_path)
+
         if is_rec:
             self.write_dict_to_onnx(save_onnx_path, txt_url)
             print('The dict of recognition has been written to the onnx model.')
+
+    def change_to_dynamic(self, onnx_path: str) -> None:
+        onnx_model = onnx.load_model(onnx_path)
+        dim_shapes = onnx_model.graph.input[0].type.tensor_type.shape.ListFields()[0][1]
+
+        if 'DynamicDimension' not in dim_shapes[0].dim_param:
+            onnx_model.graph.input[0].type.tensor_type.shape.dim[0].dim_param = 'None'
+
+        if 'DynamicDimension' not in dim_shapes[2].dim_param:
+            onnx_model.graph.input[0].type.tensor_type.shape.dim[2].dim_param = '?'
+
+        if 'DynamicDimension' not in dim_shapes[3].dim_param:
+            onnx_model.graph.input[0].type.tensor_type.shape.dim[3].dim_param = '?'
+
+        print('The model has change to dynamic inputs.')
+        onnx.save(onnx_model, onnx_path)
 
     def write_dict_to_onnx(self, model_path: str, txt_url: str):
         txt_path = download_file(txt_url, '.')
