@@ -2,11 +2,17 @@
 # @Author: SWHL
 # @Contact: liekkaskono@163.com
 # github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/ppocr/utils/network.py
+import re
 import tarfile
 from pathlib import Path
+from typing import Union
 
 import requests
 from tqdm import tqdm
+
+
+class DownloadModelError(Exception):
+    pass
 
 
 def mkdir(dir_path):
@@ -63,8 +69,20 @@ def unzip_file(file_path: str, save_dir: str, is_del_raw=True) -> Path:
                 f.write(file.read())
     if is_del_raw:
         Path(file_path).unlink()
+        print(f'The {file_path} has been deleted.')
     return model_dir
 
 
-class DownloadModelError(Exception):
-    pass
+def is_http_url(s: Union[str, Path]) -> bool:
+    regex = re.compile(
+        r'^(?:http|ftp)s?://'  # http:// or https://
+        # domain...
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+        r'localhost|'  # localhost...
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+        r'(?::\d+)?'  # optional port
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+
+    if regex.match(str(s)):
+        return True
+    return False

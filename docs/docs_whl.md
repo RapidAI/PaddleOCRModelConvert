@@ -38,4 +38,18 @@ pip install paddleocr_convert
                         -txt_url https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt
     ```
 
+### 3. Run by script.
+```python
+from paddleocr_convert import PaddleOCRModelConvert
+
+converter = PaddleOCRModelConvert()
+
+url = 'https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar'
+
+save_dir = 'models'
+txt_url = 'https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt'
+
+converter(url, save_dir, txt_url=txt_url)
+```
+
 ### See more details for [README](https://github.com/RapidAI/PaddleOCRModelConverter).
