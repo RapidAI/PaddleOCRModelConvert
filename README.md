@@ -8,7 +8,8 @@
 
 - 本仓库主要是针对性地将[PaddleOCR中推理模型](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md)转换为ONNX格式。
 - **注意**：
-  - 输入是推理模型的url，输出即是转换后的ONNX模型。
+  - 输入：推理模型的url或者本地tar路径
+  - 输出：转换后的ONNX模型
   - 如果是识别模型，需要提供对应字典的原始txt路径（**打开github中txt文件，点击右上角raw之后的路径**），用来将字典写入到onnx模型中
 - 搭配[RapidOCR](https://github.com/RapidAI/RapidOCR)中相关推理代码使用
 
@@ -22,15 +23,15 @@
    - 用法:
         ```bash
         $ paddleocr_convert -h
-        usage: paddleocr_convert [-h] [-url MODEL_URL] [-o SAVE_DIR]
+        usage: paddleocr_convert [-h] [-p MODEL_PATH] [-o SAVE_DIR]
                                 [-txt_url TXT_URL]
 
         optional arguments:
         -h, --help            show this help message and exit
-        -url MODEL_URL, --model_url MODEL_URL
+        -p MODEL_PATH, --model_path MODEL_URL
                                 The inference model url of paddleocr. e.g.
                                 https://paddleocr.bj.bcebos.com/PP-
-                                OCRv3/chinese/ch_PP-OCRv3_det_infer.tar
+                                OCRv3/chinese/ch_PP-OCRv3_det_infer.tar or models/ch_PP-OCRv3_det_infer.tar
         -o SAVE_DIR, --save_dir SAVE_DIR
                                 The directory of saving the model.
         -txt_url TXT_URL, --txt_url TXT_URL
@@ -38,11 +39,12 @@
         ```
    - 示例:
         ```bash
-        $ paddleocr_convert -url https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_det_infer.tar -o models
+        $ paddleocr_convert -p https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_det_infer.tar -o models
 
-        $ paddleocr_convert -url https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar \
+        $ paddleocr_convert -p https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar \
                             -o models \
                             -txt_url https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt
+        $ paddleocr_convert -p models/
         ```
 3. 脚本使用
     ```python
@@ -103,7 +105,7 @@
 
 ### 更新日志
 - 2023-03-05 v0.0.4 update:
-  - 支持对本地的模型转写
+  - 支持对本地的模型和字典转写
   - 优化内部逻辑和错误反馈
 
 - 2023-02-28 v0.0.3 update:

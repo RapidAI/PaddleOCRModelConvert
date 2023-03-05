@@ -15,6 +15,6 @@ converter = PaddleOCRModelConvert()
 url = 'https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar'
 
 save_dir = 'models'
-txt_url = 'https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt'
+txt_path = 'https://gitee.com/paddlepaddle/PaddleOCR/raw/release/2.6/ppocr/utils/ppocr_keys_v1.txt'
 
-converter(url, save_dir, txt_url=txt_url)
+converter(url, save_dir, txt_path=txt_path)
