@@ -26,6 +26,7 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pytest
+          pip install six
           pytest tests/test_*.py
 
   GenerateWHL_PushPyPi:
