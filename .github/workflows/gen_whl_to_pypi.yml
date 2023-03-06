@@ -10,6 +10,22 @@ on:
       - '.github/workflows/gen_whl_to_pypi.yml'
 
 jobs:
+  UnitTesting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull latest code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.7'
+          architecture: 'x64'
+
+      - name: Unit testings
+        run: |
+          pytest tests/test_*.py
+
   GenerateWHL_PushPyPi:
     runs-on: ubuntu-latest
 

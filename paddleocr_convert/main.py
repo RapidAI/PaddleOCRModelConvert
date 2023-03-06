@@ -47,6 +47,10 @@ class PaddleOCRModelConvert():
             txt_path = self.get_file_path(txt_path, '.')
             character_dict = self.read_txt(txt_path)
             self.write_dict_to_onnx(save_onnx_path, character_dict)
+
+            if is_del_raw:
+                txt_path.unlink()
+
             print(
                 'The dict of recognition has been written to the onnx model.')
         return save_onnx_path
@@ -118,7 +122,7 @@ def main():
     parser.add_argument('-o', '--save_dir', type=str,
                         help='The directory of saving the model.')
     parser.add_argument('-txt_path', '--txt_path', type=str, default=None,
-                        help='The raw txt url, if the model is recognition model.')
+                        help='The raw txt url or local txt path, if the model is recognition model.')
     args = parser.parse_args()
 
     converter = PaddleOCRModelConvert()

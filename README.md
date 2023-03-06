@@ -24,27 +24,38 @@
         ```bash
         $ paddleocr_convert -h
         usage: paddleocr_convert [-h] [-p MODEL_PATH] [-o SAVE_DIR]
-                                [-txt_url TXT_URL]
+                                [-txt_path TXT_PATH]
 
         optional arguments:
         -h, --help            show this help message and exit
-        -p MODEL_PATH, --model_path MODEL_URL
-                                The inference model url of paddleocr. e.g.
-                                https://paddleocr.bj.bcebos.com/PP-
-                                OCRv3/chinese/ch_PP-OCRv3_det_infer.tar or models/ch_PP-OCRv3_det_infer.tar
+        -p MODEL_PATH, --model_path MODEL_PATH
+                                The inference model url or local path of paddleocr.
+                                e.g. https://paddleocr.bj.bcebos.com/PP-
+                                OCRv3/chinese/ch_PP-OCRv3_det_infer.tar or
+                                models/ch_PP-OCRv3_det_infer.tar
         -o SAVE_DIR, --save_dir SAVE_DIR
                                 The directory of saving the model.
-        -txt_url TXT_URL, --txt_url TXT_URL
-                                The raw txt url, if the model is recognition model.
+        -txt_path TXT_PATH, --txt_path TXT_PATH
+                                The raw txt url or local txt path, if the model is
+                                recognition model.
         ```
    - 示例:
         ```bash
-        $ paddleocr_convert -p https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_det_infer.tar -o models
+        # online
+        $ paddleocr_convert -p https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_det_infer.tar \
+                            -o models
 
         $ paddleocr_convert -p https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar \
                             -o models \
-                            -txt_url https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt
-        $ paddleocr_convert -p models/
+                            -txt_path https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt
+
+        # offline
+        $ paddleocr_convert -p models/ch_PP-OCRv3_det_infer.tar \
+                            -o models
+
+        $ paddleocr_convert -p models/ch_PP-OCRv3_rec_infer.tar \
+                            -o models \
+                            -txt_path models/ppocr_keys_v1.txt
         ```
 3. 脚本使用
     ```python
@@ -52,14 +63,21 @@
 
     converter = PaddleOCRModelConvert()
 
-    url = 'https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar'
-
     save_dir = 'models'
+
+    # online
+    url = 'https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar'
     txt_url = 'https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt'
 
-    converter(url, save_dir, txt_url=txt_url)
+    converter(url, save_dir, txt_path=txt_url)
+
+    # offline
+    model_path = 'models/ch_PP-OCRv3_rec_infer.tar'
+    txt_path = 'models/ppocr_keys_v1.txt'
+    converter(model_path, save_dir, txt_path=txt_path)
     ```
-4. 使用模型方法：
+
+4. 使用模型方法（暂定）：
     1. 下载RapidOCR仓库源码（[RapidOCR](https://github.com/RapidAI/RapidOCR)）
     2. 切换到**python**目录下
         ```text
