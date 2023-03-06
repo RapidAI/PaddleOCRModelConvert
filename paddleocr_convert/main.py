@@ -1,10 +1,18 @@
 # -*- encoding: utf-8 -*-
 # @Author: SWHL
 # @Contact: liekkaskono@163.com
+"""
+该模块是paddleocr_convert转换模型的核心代码。主要包括下载模型、解压模型、转换模型和更改模型为动态输入四部分。
+由于目前`paddle2onnx`转换工具较为成熟，可以就没有添加转换前后模型精度验证是否满足要求的操作。
+
+支持模型的url和本地路径两种输入方式。其中针对`rec`的模型，需要提供对应的字典文件，该库会自动将字典文件写入到onnx中。
+这里需要搭配[RapidOCR](https://github.com/RapidAI/RapidOCR)推理代码使用
+
+"""
 import argparse
 import os
 from pathlib import Path
-from typing import Union, Dict
+from typing import Union
 
 import onnx
 
@@ -57,6 +65,18 @@ class PaddleOCRModelConvert():
 
     @staticmethod
     def get_file_path(file_path: str, save_dir: str) -> str:
+        """获得文件的本地路径，如果是url，则会自动下载到本地之后，再返回本地文件对应路径
+
+        Args:
+            file_path (str): url or 本地路径
+            save_dir (str): 下载到本地的路径
+
+        Raises:
+            FileExistsError: 本地为存在该文件的异常
+
+        Returns:
+            str: 文件的本地路径
+        """
         if is_http_url(file_path):
             file_path = download_file(file_path, save_dir)
 
@@ -65,6 +85,15 @@ class PaddleOCRModelConvert():
         return file_path
 
     def convert_to_onnx(self, model_dir: str, save_onnx_path: str) -> int:
+        """借助`paddle2onnx`工具转换模型为onnx格式
+
+        Args:
+            model_dir (str): 保存paddle格式模型所在目录
+            save_onnx_path (str): 保存的onnx全路径
+
+        Returns:
+            int: 是否成功，不为0则表示成功
+        """
         shell_str = f'paddle2onnx --model_dir {model_dir} ' \
                     '--model_filename inference.pdmodel ' \
                     '--params_filename inference.pdiparams ' \
@@ -74,6 +103,11 @@ class PaddleOCRModelConvert():
         return run_flag
 
     def change_to_dynamic(self, onnx_path: Union[str, Path]) -> None:
+        """更改onnx格式模型的指定为维度为动态输入
+
+        Args:
+            onnx_path (Union[str, Path]): onnx模型路径
+        """
         onnx_path = str(onnx_path)
         onnx_model = onnx.load_model(onnx_path)
         dim_shapes = onnx_model.graph.input[0].type.tensor_type.shape.ListFields()[0][1]
@@ -91,24 +125,32 @@ class PaddleOCRModelConvert():
         print('The model has change to dynamic inputs.')
         onnx.save(onnx_model, onnx_path)
 
-    def write_dict_to_onnx(self, model_path: str, character_dict: Dict):
+    def write_dict_to_onnx(self, model_path: str, character_dict: str):
+        """将文本识别模型对应的字典文件写入到onnx模型中
+
+        Args:
+            model_path (str): onnx模型路径
+            character_dict (str): 字典列表
+        """
         model = onnx.load_model(str(model_path))
-        model = self.onnx_add_metadata(model, key='character',
-                                       value=character_dict)
+        meta = model.metadata_props.add()
+        meta.key = 'character'
+        meta.value = character_dict
         onnx.save_model(model, str(model_path))
 
     @staticmethod
     def read_txt(txt_path: Union[str, Path]) -> str:
+        """读取txt文件
+
+        Args:
+            txt_path (Union[str, Path]): 字典文件全路径
+
+        Returns:
+            str: 字典字符串
+        """
         with open(str(txt_path), 'r', -1, 'u8') as f:
             value = f.read()
         return value
-
-    @staticmethod
-    def onnx_add_metadata(model, key, value):
-        meta = model.metadata_props.add()
-        meta.key = key
-        meta.value = value
-        return model
 
 
 class ConvertError(Exception):

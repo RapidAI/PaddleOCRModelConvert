@@ -15,14 +15,31 @@ class DownloadModelError(Exception):
     pass
 
 
-def mkdir(dir_path):
+def mkdir(dir_path: Union[str, Path]):
+    """创建目录
+
+    Args:
+        dir_path (Union[str, Path]): 路径地址
+    """
     Path(dir_path).mkdir(parents=True, exist_ok=True)
 
 
 def download_file(url: str, save_dir: str) -> Path:
+    """下载指定url的文件
+
+    Args:
+        url (str): 文件url路径
+        save_dir (str): 下载保存的目录
+
+    Raises:
+        DownloadModelError: 下载异常
+
+    Returns:
+        Path: 下载到本地的文件全路径
+    """
     mkdir(save_dir)
 
-    response = requests.get(url, stream=True)
+    response = requests.get(url, stream=True, timeout=(120, 120))
     status_code = response.status_code
 
     if status_code != 200:
@@ -42,11 +59,15 @@ def download_file(url: str, save_dir: str) -> Path:
 
 
 def unzip_file(file_path: str, save_dir: str, is_del_raw=True) -> Path:
-    """解压下载得到的tar模型文件，会自动解压到save_dir下以file_path命名的目录下
+    """解压下载得到的tar模型文件，会自动解压到`save_dir`下以`file_path`命名的目录下
 
     Args:
-        file_path (str): _description_
-        save_dir (str): _description_
+        file_path (str): tar格式文件路径
+        save_dir (str): 解压路径
+        is_del_raw (bool, optional): 是否删除原文件. Defaults to True.
+
+    Returns:
+        Path: 解压后模型保存路径
     """
     model_dir = Path(save_dir) / Path(file_path).stem
     mkdir(model_dir)
@@ -74,6 +95,14 @@ def unzip_file(file_path: str, save_dir: str, is_del_raw=True) -> Path:
 
 
 def is_http_url(s: Union[str, Path]) -> bool:
+    """判断是否为url
+
+    Args:
+        s (Union[str, Path]): 输入的字符串
+
+    Returns:
+        bool: 是或否
+    """
     regex = re.compile(
         r'^(?:http|ftp)s?://'  # http:// or https://
         # domain...
