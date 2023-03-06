@@ -34,7 +34,7 @@ jobs:
           python-version: '3.7'
           architecture: 'x64'
 
-      - name: install  all dependencies
+      - name: Install all dependencies
         run: |
           pip install -r requirements.txt
           pip install six
