@@ -24,9 +24,12 @@ jobs:
 
       - name: Unit testings
         run: |
+          pip install -r requirements.txt
+          pip install pytest
           pytest tests/test_*.py
 
   GenerateWHL_PushPyPi:
+    needs: UnitTesting
     runs-on: ubuntu-latest
 
     steps:
