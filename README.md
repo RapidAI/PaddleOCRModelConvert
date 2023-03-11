@@ -12,7 +12,7 @@
   - 输入：推理模型的url或者本地tar路径
   - 输出：转换后的ONNX模型
   - 如果是识别模型，需要提供对应字典的原始txt路径（**打开github中txt文件，点击右上角raw之后的路径**），用来将字典写入到onnx模型中
-- 搭配[RapidOCR](https://github.com/RapidAI/RapidOCR)中相关推理代码使用
+  - ！！！需要搭配[RapidOCR](https://github.com/RapidAI/RapidOCR)中相关推理代码使用
 
 
 ### 使用步骤
@@ -78,51 +78,32 @@
     converter(model_path, save_dir, txt_path=txt_path)
     ```
 
-4. 使用模型方法（暂定）：
-    1. 下载RapidOCR仓库源码（[RapidOCR](https://github.com/RapidAI/RapidOCR)）
-    2. 切换到**python**目录下
-        ```text
-        .
-        ├── demo.py
-        ├── inference_results
-        ├── rapidocr_onnxruntime
-        │    ├── ch_ppocr_v2_cls
-        │    ├── ch_ppocr_v3_det
-        │    ├── ch_ppocr_v3_rec
-        │    ├── config.yaml       # 这个是配置文件
-        │    ├── __init__.py
-        │    ├── models           # 新转换的模型放在这里
-        │    │     ├── ch_ppocr_mobile_v2.0_cls_infer.onnx
-        │    │     ├── ch_PP-OCRv3_det_infer.onnx
-        │    │     └── ch_PP-OCRv3_rec_infer.onnx
-        │    ├── rapid_ocr_api.py
-        │    └── utils.py
-        ├── rapidocr_openvino
-        ├── rapid_structure
-        ├── README.md
-        ├── requirements.txt
-        ├── resources
-        ├── setup_onnxruntime.py
-        ├── setup_openvino.py
-        └──  tests
-        ```
-    3. 更改配置文件**config.yaml**中对应模型路径即可
-        ```yaml
-        Det:
-            model_path: models/ch_PP-OCRv3_det_infer.onnx
-        Cls:
-            model_path: models/ch_ppocr_mobile_v2.0_cls_infer.onnx
-        Rec:
-            model_path: models/ch_PP-OCRv3_rec_infer.onnx
-        ```
-    4. 运行demo
+4. 使用模型方法：
+    - 假设要用日文识别模型，且已经转好，路径为`local/models/japan.onnx`
+    1. 安装`rapidocr_onnxruntime`库
         ```bash
-        # RapidOCR/python
-        python demo.py
+        pip install rapidocr_onnxruntime
+        ```
+    2. 脚本使用
+        ```python
+        from rapidocr_onnxruntime import RapidOCR
+
+        model_path = 'local/models/japan.onnx'
+        engine = RapidOCR(rec_model_path=model_path)
+
+        img = '1.jpg'
+        result, elapse = engine(img)
+        ```
+    3. 命令行使用
+        ```bash
+        $ rapidocr_onnxruntime -img 1.jpg --rec_model_path local/models/japan.onnx
         ```
 
 
 ### 更新日志
+
+<details>
+
 - 2023-03-05 v0.0.4~7 update:
   - 支持对本地的模型和字典转写
   - 优化内部逻辑和错误反馈
@@ -135,3 +116,5 @@
 
 - 2022-08-15 v0.0.1 update:
   - 将识别模型的字典写入到onnx模型中的meta中，便于后续分发。
+
+</details>
