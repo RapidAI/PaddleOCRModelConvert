@@ -169,7 +169,7 @@ def main():
 
     converter = PaddleOCRModelConvert()
 
-    converter(args.model_path, args.save_dir, args.txt_url)
+    converter(args.model_path, args.save_dir, args.txt_path)
 
 
 if __name__ == '__main__':
