@@ -3,3 +3,4 @@ requests>=2.27.1
 setuptools>=61.2.0
 tqdm>=4.64.1
 paddle2onnx>=1.0.0
+get_pypi_latest_version
