@@ -3,8 +3,8 @@ name: Deploy the docs to RTD
 env:
   REPO_SSH: ${{ github.event.repository.ssh_url }}
   CLONE_URL: ${{ github.event.repository.clone_url }}
-  USER_NAME: ${{ github.event.repository.owner.name }}
-  USER_EMAIL: ${{ github.event.repository.owner.email }}
+  USER_NAME: SWHL
+  USER_EMAIL: liekkaskono@163.com
   SUBMMIT_BRANCH: docs
   PACKAGE_NAME: paddleocr_convert
 
@@ -55,7 +55,7 @@ jobs:
           cp -r ../${PACKAGE_NAME} .
 
           echo "Update requirements and add packages needed by sphinx"
-          echo -e 'sphinx_rtd_theme\nsphinxcontrib.mermaid\nmyst-parser\nsphinx_copybutton\nget_pypi_latest_version' >> ../requirements.txt
+          echo -e '\nsphinx_rtd_theme\nsphinxcontrib.mermaid\nmyst-parser\nsphinx_copybutton\nget_pypi_latest_version' >> ../requirements.txt
           rm requirements.txt
           cp ../requirements.txt .
 
