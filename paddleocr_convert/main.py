@@ -77,7 +77,7 @@ class PaddleOCRModelConvert():
         return file_path
 
     def convert_to_onnx(self, model_dir: str, save_onnx_path: str) -> int:
-        """借助 `paddle2onnx https://github.com/PaddlePaddle/Paddle2ONNX`_ 工具转换模型为onnx格式
+        """借助 :code:`paddle2onnx` 工具转换模型为onnx格式
 
         Args:
             model_dir (str): 保存paddle格式模型所在目录
