@@ -59,7 +59,7 @@ def download_file(url: str, save_dir: str) -> Path:
 
 
 def unzip_file(file_path: str, save_dir: str, is_del_raw=True) -> Path:
-    """解压下载得到的tar模型文件，会自动解压到``save_dir``下以``file_path``命名的目录下
+    """解压下载得到的tar模型文件，会自动解压到 :code:`save_dir`下以 :code:`file_path`命名的目录下
 
     Args:
         file_path (str): tar格式文件路径
