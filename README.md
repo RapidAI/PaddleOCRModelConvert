@@ -11,10 +11,10 @@
 
 - 本仓库主要是针对性地将[PaddleOCR中推理模型](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md)转换为ONNX格式。
 - **注意**：
-  - 输入：推理模型的url或者本地tar路径
-  - 输出：转换后的ONNX模型
-  - 如果是识别模型，需要提供对应字典的原始txt路径（**打开github中txt文件，点击右上角raw之后的路径**），用来将字典写入到onnx模型中
-  - ！！！需要搭配[RapidOCR](https://github.com/RapidAI/RapidOCR)中相关推理代码使用
+  - **输入**：推理模型的**url**或者本地**tar**路径
+  - **输出**：转换后的**ONNX**模型
+  - 如果是识别模型，需要提供对应字典的原始txt路径（**打开github中txt文件，点击右上角raw之后的路径**），用来将字典写入到ONNX模型中
+  - ☆ 需要搭配[RapidOCR](https://github.com/RapidAI/RapidOCR)中相关推理代码使用
 
 
 ### 使用步骤
@@ -81,7 +81,7 @@
     ```
 
 4. 使用模型方法：
-    - 假设要用日文识别模型，且已经转好，路径为`local/models/japan.onnx`
+     - 假设要用日文识别模型，且已经转好，路径为`local/models/japan.onnx`
     1. 安装`rapidocr_onnxruntime`库
         ```bash
         pip install rapidocr_onnxruntime
