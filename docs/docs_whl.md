@@ -52,23 +52,28 @@ pip install paddleocr_convert
     ```
 
 ### 3. Run by script.
-```python
-from paddleocr_convert import PaddleOCRModelConvert
+- online mode
+    ```python
+    from paddleocr_convert import PaddleOCRModelConvert
 
-converter = PaddleOCRModelConvert()
+    converter = PaddleOCRModelConvert()
 
-save_dir = 'models'
+    save_dir = 'models'
+    url = 'https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar'
+    txt_url = 'https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt'
 
-# online
-url = 'https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar'
-txt_url = 'https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt'
+    converter(url, save_dir, txt_path=txt_url)
+    ```
+- offline mode
+    ```python
+    from paddleocr_convert import PaddleOCRModelConvert
 
-converter(url, save_dir, txt_path=txt_url)
+    converter = PaddleOCRModelConvert()
 
-# offline
-model_path = 'models/ch_PP-OCRv3_rec_infer.tar'
-txt_path = 'models/ppocr_keys_v1.txt'
-converter(model_path, save_dir, txt_path=txt_path)
-```
+    save_dir = 'models'
+    model_path = 'models/ch_PP-OCRv3_rec_infer.tar'
+    txt_path = 'models/ppocr_keys_v1.txt'
+    converter(model_path, save_dir, txt_path=txt_path)
+    ```
 
 ### See more details for [README](https://github.com/RapidAI/PaddleOCRModelConverter).

@@ -61,24 +61,28 @@
                             -txt_path models/ppocr_keys_v1.txt
         ```
 3. 脚本使用
-    ```python
-    from paddleocr_convert import PaddleOCRModelConvert
+    - online mode
+        ```python
+        from paddleocr_convert import PaddleOCRModelConvert
 
-    converter = PaddleOCRModelConvert()
+        converter = PaddleOCRModelConvert()
+        save_dir = 'models'
+        # online
+        url = 'https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar'
+        txt_url = 'https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt'
 
-    save_dir = 'models'
+        converter(url, save_dir, txt_path=txt_url)
+        ```
+    - offline mode
+        ```python
+        from paddleocr_convert import PaddleOCRModelConvert
 
-    # online
-    url = 'https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar'
-    txt_url = 'https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt'
-
-    converter(url, save_dir, txt_path=txt_url)
-
-    # offline
-    model_path = 'models/ch_PP-OCRv3_rec_infer.tar'
-    txt_path = 'models/ppocr_keys_v1.txt'
-    converter(model_path, save_dir, txt_path=txt_path)
-    ```
+        converter = PaddleOCRModelConvert()
+        save_dir = 'models'
+        model_path = 'models/ch_PP-OCRv3_rec_infer.tar'
+        txt_path = 'models/ppocr_keys_v1.txt'
+        converter(model_path, save_dir, txt_path=txt_path)
+        ```
 
 4. 使用模型方法：
      - 假设要用日文识别模型，且已经转好，路径为`local/models/japan.onnx`
