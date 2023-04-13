@@ -1,5 +1,6 @@
 ## paddleocr_convert
 <p>
+    <a href="https://huggingface.co/spaces/SWHL/PaddleOCRModelConverter" target="_blank"><img src="https://img.shields.io/badge/%F0%9F%A4%97-Online Convert-blue"></a>
     <a href=""><img src="https://img.shields.io/badge/Python->=3.7,<=3.10-aff.svg"></a>
     <a href=""><img src="https://img.shields.io/badge/OS-Linux%2C%20Win%2C%20Mac-pink.svg"></a>
     <a href="https://pypi.org/project/paddleocr_convert/"><img alt="PyPI" src="https://img.shields.io/pypi/v/paddleocr_convert"></a>
@@ -110,16 +111,15 @@
 
 <details>
 
+- 2023-04-13 update:
+  - 添加在线转换程序[link](https://huggingface.co/spaces/SWHL/PaddleOCRModelConverter)
 - 2023-03-05 v0.0.4~7 update:
   - 支持对本地的模型和字典转写
   - 优化内部逻辑和错误反馈
-
 - 2023-02-28 v0.0.3 update:
   - 添加对不是动态输入的模型自动更改为动态输入的设置
-
 - 2023-02-27 v0.0.2 update:
   - 将转换模型代码封装成包，便于自助转模型
-
 - 2022-08-15 v0.0.1 update:
   - 将识别模型的字典写入到onnx模型中的meta中，便于后续分发。
 
