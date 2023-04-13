@@ -10,6 +10,7 @@
     </a>
 </p>
 
+- 🎉 推出知识星球[RapidAI私享群](https://t.zsxq.com/0duLBZczw)，这里的提问会优先得到回答和支持，也会享受到RapidAI组织后续持续优质的服务。欢迎大家的加入。
 - 本仓库主要是针对性地将[PaddleOCR中推理模型](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md)转换为ONNX格式。
 - **注意**：
   - **输入**：推理模型的**url**或者本地**tar**路径
