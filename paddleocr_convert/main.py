@@ -2,9 +2,9 @@
 # @Author: SWHL
 # @Contact: liekkaskono@163.com
 import argparse
-import os
 from pathlib import Path
-from typing import Union
+from subprocess import PIPE, STDOUT, Popen
+from typing import List, Union
 
 import onnx
 
@@ -31,11 +31,12 @@ class PaddleOCRModelConvert():
 
         # 转换模型
         save_onnx_path = model_dir / f'{Path(model_path).stem}.onnx'
-        run_flag = self.convert_to_onnx(model_dir, save_onnx_path)
-        if run_flag == 0:
-            print(f'Successfully convert model to {save_onnx_path}')
+        try:
+            self.convert_to_onnx(model_dir, save_onnx_path)
+        except ConvertError as e:
+            raise e
         else:
-            raise ConvertError('paddle2onnx convert failed!')
+            print(f'Successfully convert model to {save_onnx_path}')
 
         try:
             self.change_to_dynamic(save_onnx_path)
@@ -76,23 +77,26 @@ class PaddleOCRModelConvert():
             raise FileExistsError(f'{file_path} does not exist.')
         return file_path
 
-    def convert_to_onnx(self, model_dir: str, save_onnx_path: str) -> int:
+    def convert_to_onnx(self, model_dir: str, save_onnx_path: str) -> None:
         """借助 :code:`paddle2onnx` 工具转换模型为onnx格式
 
         Args:
             model_dir (str): 保存paddle格式模型所在目录
             save_onnx_path (str): 保存的onnx全路径
-
-        Returns:
-            int: 是否成功，不为0则表示成功
         """
         shell_str = f'paddle2onnx --model_dir {model_dir} ' \
                     '--model_filename inference.pdmodel ' \
                     '--params_filename inference.pdiparams ' \
                     f'--opset_version {self.opset} ' \
                     f'--save_file {save_onnx_path}'
-        run_flag = os.system(shell_str)
-        return run_flag
+        with Popen(shell_str, stdout=PIPE, stderr=STDOUT, shell=True) as proc:
+            run_log = [v.decode() for v in proc.stdout.readlines()]
+            run_log = '\n'.join(run_log)
+
+        # 通过日志中是否有failed字样，来确定是否转化成功
+        failed_phrases = ['Failed to', 'parsing failed', 'convert failed']
+        if self.is_contain(run_log, failed_phrases):
+            raise ConvertError(run_log)
 
     def change_to_dynamic(self, onnx_path: Union[str, Path]) -> None:
         """更改onnx格式模型的指定为维度为动态输入
@@ -114,7 +118,7 @@ class PaddleOCRModelConvert():
         if dynamic_name not in dim_shapes[3].dim_param:
             onnx_model.graph.input[0].type.tensor_type.shape.dim[3].dim_param = '?'
 
-        print('The model has change to dynamic inputs.')
+        print('The model has changed to dynamic inputs.')
         onnx.save(onnx_model, onnx_path)
 
     def write_dict_to_onnx(self, model_path: str, character_dict: str):
@@ -143,6 +147,11 @@ class PaddleOCRModelConvert():
         with open(str(txt_path), 'r', -1, 'u8') as f:
             value = f.read()
         return value
+
+    @staticmethod
+    def is_contain(sentence: str, key_words: Union[str, List],) -> bool:
+        """sentences中是否包含key_words中任意一个"""
+        return any(i in sentence for i in key_words)
 
 
 class ConvertError(Exception):

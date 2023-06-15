@@ -13,7 +13,7 @@
 - 🎉 推出知识星球[RapidAI私享群](https://t.zsxq.com/0duLBZczw)，这里的提问会优先得到回答和支持，也会享受到RapidAI组织后续持续优质的服务。欢迎大家的加入。
 - 本仓库主要是针对性地将[PaddleOCR中推理模型](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md)转换为ONNX格式。
 - **⚠️注意**：
-  - 仅支持[link](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md)中下载地址中的**推理模型，如果是训练模型，需要手动转换为推理格式。**
+  - 仅支持[link](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md)中下载地址中的**推理模型**，如果是训练模型，需要手动转换为推理格式。
   - **输入**：推理模型的**url**或者本地**tar**路径
   - **输出**：转换后的**ONNX**模型
   - 如果是识别模型，需要提供对应字典的原始txt路径（**打开github中txt文件，点击右上角raw之后的路径，类似[这个](https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt)**），用来将字典写入到ONNX模型中
