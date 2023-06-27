@@ -1,4 +1,4 @@
-## paddleocr_convert
+## PaddleOCR Model Convert
 <p>
     <a href="https://huggingface.co/spaces/SWHL/PaddleOCRModelConverter" target="_blank"><img src="https://img.shields.io/badge/%F0%9F%A4%97-Online Convert-blue"></a>
     <a href=""><img src="https://img.shields.io/badge/Python->=3.7,<=3.10-aff.svg"></a>
@@ -18,7 +18,17 @@
   - **输出**：转换后的**ONNX**模型
   - 如果是识别模型，需要提供对应字典的原始txt路径（**打开github中txt文件，点击右上角raw之后的路径，类似[这个](https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt)**），用来将字典写入到ONNX模型中
   - ☆ 需要搭配[RapidOCR](https://github.com/RapidAI/RapidOCR)中相关推理代码使用
+  - 如果遇到不能成功转换的模型，可根据下图思路，逐一排查哪一步出错了。
 
+
+### 整体思路
+```mermaid
+flowchart TD
+
+A([PaddleOCR inference model]) --paddle2onnx--> B([ONNX])
+B --> C([Change Dynamic Input]) --> D([Rec: 字典写入onnx中])
+D --> E([保存])
+```
 
 ### 使用步骤
 1. 安装`paddleocr_convert`
