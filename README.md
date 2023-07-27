@@ -115,6 +115,7 @@ D --> E([Save])
 ### Changelog
 
 <details>
+    <summary>Click to expand</summary>
 
 - 2023-07-27 v0.0.16 update:
    - Added the online conversion version of ModelScope.
