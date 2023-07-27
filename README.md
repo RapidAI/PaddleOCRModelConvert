@@ -11,6 +11,7 @@ English | [简体中文](https://github.com/RapidAI/PaddleOCRModelConverter/blob
      <a href='https://paddleocrmodelconverter.readthedocs.io/en/latest/?badge=latest'>
          <img src='https://readthedocs.org/projects/paddleocrmodelconverter/badge/?version=latest' alt='Documentation Status' />
      </a>
+    <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 
 - This repository is mainly to convert [Inference Model in PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md) into ONNX format.

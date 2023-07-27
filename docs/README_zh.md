@@ -11,6 +11,7 @@
     <a href='https://paddleocrmodelconverter.readthedocs.io/en/latest/?badge=latest'>
         <img src='https://readthedocs.org/projects/paddleocrmodelconverter/badge/?version=latest' alt='Documentation Status' />
     </a>
+    <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 
 - 🎉 推出知识星球[RapidAI私享群](https://t.zsxq.com/0duLBZczw)，这里的提问会优先得到回答和支持，也会享受到RapidAI组织后续持续优质的服务。欢迎大家的加入。
