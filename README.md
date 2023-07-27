@@ -18,7 +18,7 @@ English | [简体中文](https://github.com/RapidAI/PaddleOCRModelConverter/blob
    - Only support the **reasoning model** in the download address in [link](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md), if it is a training model, Manual conversion to inference format is required.
    - **Input**: **url** or local **tar** path of inference model
    - **Output**: converted **ONNX** model
-   - If it is a recognition model, you need to provide the original txt path of the corresponding dictionary (**Open the txt file in github, click the path after raw in the upper right corner, similar to [this](https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/ release/2.6/ppocr/utils/ppocr_keys_v1.txt)**), used to write the dictionary into the ONNX model
+   - If it is a recognition model, you need to provide the original txt path of the corresponding dictionary (**Open the txt file in github, click the path after raw in the upper right corner, similar to [this](https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt)**), used to write the dictionary into the ONNX model
    - ☆ It needs to be used with the relevant reasoning code in [RapidOCR](https://github.com/RapidAI/RapidOCR)
    - If you encounter a model that cannot be successfully converted, you can check which steps are wrong one by one according to the ideas in the figure below.
 
