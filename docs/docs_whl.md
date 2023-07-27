@@ -1,6 +1,7 @@
 ## paddleocr_convert
 <p>
     <a href="https://huggingface.co/spaces/SWHL/PaddleOCRModelConverter" target="_blank"><img src="https://img.shields.io/badge/%F0%9F%A4%97-Online Convert-blue"></a>
+    <a href="https://www.modelscope.cn/studios/liekkas/PaddleOCRModelConverter/summary" target="_blank"><img src="https://img.shields.io/badge/ModelScope-Online Convert -blue"></a>
     <a href=""><img src="https://img.shields.io/badge/Python->=3.7,<=3.10-aff.svg"></a>
     <a href=""><img src="https://img.shields.io/badge/OS-Linux%2C%20Win%2C%20Mac-pink.svg"></a>
     <a href="https://pypi.org/project/paddleocr_convert/"><img alt="PyPI" src="https://img.shields.io/pypi/v/paddleocr_convert"></a>
@@ -77,4 +78,4 @@ pip install paddleocr_convert
     converter(model_path, save_dir, txt_path=txt_path)
     ```
 
-### See more details for [README](https://github.com/RapidAI/PaddleOCRModelConverter).
+### See more details for [PaddleOCRModelConverter](https://github.com/RapidAI/PaddleOCRModelConverter).
