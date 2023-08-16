@@ -36,7 +36,7 @@ D --> E([Save])
 ### Steps for usage
 1. Install `paddleocr_convert`
     ```bash
-    pip install paddle ocr_convert
+    pip install paddleocr_convert
     ```
 2. Using the command line
     - Usage:
