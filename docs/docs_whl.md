@@ -78,4 +78,4 @@ pip install paddleocr_convert
     converter(model_path, save_dir, txt_path=txt_path)
     ```
 
-### See more details for [PaddleOCRModelConverter](https://github.com/RapidAI/PaddleOCRModelConverter).
+### See more details for [PaddleOCRModelConvert](https://github.com/RapidAI/PaddleOCRModelConvert).

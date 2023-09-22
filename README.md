@@ -13,13 +13,11 @@
 </p>
 
 - This repository is mainly to convert [Inference Model in PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md) into ONNX format.
-- **⚠️Note**:
-   - Only support the **reasoning model** in the download address in [link](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md), if it is a training model, Manual conversion to inference format is required.
-   - **Input**: **url** or local **tar** path of inference model
-   - **Output**: converted **ONNX** model
-   - If it is a recognition model, you need to provide the original txt path of the corresponding dictionary (**Open the txt file in github, click the path after raw in the upper right corner, similar to [this](https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt)**), used to write the dictionary into the ONNX model
-   - ☆ It needs to be used with the relevant reasoning code in [RapidOCR](https://github.com/RapidAI/RapidOCR)
-   - If you encounter a model that cannot be successfully converted, you can check which steps are wrong one by one according to the ideas in the figure below.
+- **Input**: **url** or local **tar** path of inference model
+- **Output**: converted **ONNX** model
+- If it is a recognition model, you need to provide the original txt path of the corresponding dictionary (**Open the txt file in github, click the path after raw in the upper right corner, similar to [this](https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt)**), used to write the dictionary into the ONNX model
+- ☆ It needs to be used with the relevant reasoning code in [RapidOCR](https://github.com/RapidAI/RapidOCR)
+- If you encounter a model that cannot be successfully converted, you can check which steps are wrong one by one according to the ideas in the figure below.
 
 
 ### Overall framework
@@ -37,6 +35,12 @@ pip install paddleocr_convert
 ```
 
 ### Usage
+> [!WARNING]
+>
+> Only support the **reasoning model** in the download address in [link](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md), if it is a training model, Manual conversion to inference format is required.
+>
+> The **slim quantized model** in PaddleOCR does not support conversion.
+
 #### Using the command line
 - Usage:
     ```bash
@@ -126,6 +130,8 @@ Assuming that the model needs to be recognized in Japanese, and it has been conv
 <details>
     <summary>Click to expand</summary>
 
+- 2023-09-22 v0.0.17 update:
+    - Improve the log when meets the error.
 - 2023-07-27 v0.0.16 update:
    - Added the online conversion version of ModelScope.
    - Change python version from python 3.6 ~ 3.11.

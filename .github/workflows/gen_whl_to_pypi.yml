@@ -2,12 +2,14 @@ name: Push paddleocr_convert to pypi
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'paddleocr_convert/**'
-      - 'docs/doc_whl.md'
-      - 'setup.py'
-      - '.github/workflows/gen_whl_to_pypi.yml'
+    # branches: [ main ]
+    # paths:
+    #   - 'paddleocr_convert/**'
+    #   - 'docs/doc_whl.md'
+    #   - 'setup.py'
+    #   - '.github/workflows/gen_whl_to_pypi.yml'
+    tags:
+      - v*
 
 jobs:
   UnitTesting:
