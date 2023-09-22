@@ -8,7 +8,7 @@ from typing import List, Optional, Union
 
 import onnx
 
-from .utils import InputType, download_file, is_http_url, mkdir, unzip_file
+from .utils import InputType, download_file, is_http_url, unzip_file
 
 
 class PaddleOCRModelConvert:
@@ -28,7 +28,6 @@ class PaddleOCRModelConvert:
         if is_rec and not txt_path:
             raise ConvertError("Please give the txt url.")
 
-        mkdir(save_dir)
         model_path = self.get_file_path(model_path, save_dir)
 
         model_dir = unzip_file(model_path, save_dir, is_del_raw=is_del_raw)

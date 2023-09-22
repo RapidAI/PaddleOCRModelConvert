@@ -39,6 +39,8 @@ def download_file(url: str, save_dir: InputType) -> Path:
     Returns:
         Path: 下载到本地的文件全路径
     """
+    mkdir(save_dir)
+
     response = requests.get(url, stream=True, timeout=(120, 120))
     status_code = response.status_code
 
