@@ -1,5 +1,8 @@
-## PaddleOCR Model Convert
-<p>
+<div align="center">
+     <div align="center">
+        <h1><b><i>PaddleOCR Model Convert ➡️ </i></b></h1>
+     </div>
+     <div>&nbsp;</div>
      <a href="https://huggingface.co/spaces/SWHL/PaddleOCRModelConverter" target="_blank"><img src="https://img.shields.io/badge/%F0%9F%A4%97 -Online Convert-blue"></a>
      <a href="https://www.modelscope.cn/studios/liekkas/PaddleOCRModelConverter/summary" target="_blank"><img src="https://img.shields.io/badge/ModelScope-Online Convert -blue"></a>
      <a href=""><img src="https://img.shields.io/badge/Python->=3.6,<3.12-aff.svg"></a>
@@ -8,8 +11,9 @@
      <a href="https://pepy.tech/project/paddleocr_convert"><img src="https://static.pepy.tech/personalized-badge/paddleocr_convert?period=total&units=abbreviation&left_color=grey&right_color=blue&left_text=Downloads "></a>
     <a href="https://semver.org/"><img alt="SemVer2.0" src="https://img.shields.io/badge/SemVer-2.0-brightgreen"></a>
     <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-</p>
+</div>
 
+### Introduction
 - This repository is mainly to convert [Inference Model in PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md) into ONNX format.
 - **Input**: **url** or local **tar** path of inference model
 - **Output**: converted **ONNX** model
