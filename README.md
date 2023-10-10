@@ -1,6 +1,6 @@
 <div align="center">
      <div align="center">
-        <h1><b><i>PaddleOCR Model Convert ➡️ </i></b></h1>
+        <h1><b><i>PaddleOCR Model Convert 🔄 </i></b></h1>
      </div>
      <div>&nbsp;</div>
      <a href="https://huggingface.co/spaces/SWHL/PaddleOCRModelConverter" target="_blank"><img src="https://img.shields.io/badge/%F0%9F%A4%97 -Online Convert-blue"></a>
