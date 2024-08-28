@@ -13,7 +13,7 @@ from .utils import InputType, download_file, is_http_url, unzip_file
 
 class PaddleOCRModelConvert:
     def __init__(self) -> None:
-        self.opset = 12
+        self.opset = 14
 
     def __call__(
         self,
