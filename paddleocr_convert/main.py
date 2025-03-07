@@ -21,9 +21,12 @@ class PaddleOCRModelConvert:
         save_dir: InputType,
         txt_path: Optional[str] = None,
         is_del_raw: bool = False,
+        is_rec: Optional[bool] = None
     ) -> str:
         model_name = Path(model_path).stem
-        is_rec = "rec" in model_name
+        
+        if is_rec is None:
+            is_rec = "rec" in model_name
 
         if is_rec and not txt_path:
             raise ConvertError("Please give the txt url.")
