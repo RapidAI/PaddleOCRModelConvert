@@ -75,14 +75,17 @@ def unzip_file(file_path: str, save_dir: InputType, is_del_raw: bool = True) -> 
     model_dir = Path(save_dir) / Path(file_path).stem
     mkdir(model_dir)
 
-    tar_file_name_list = [".pdiparams", ".pdiparams.info", ".pdmodel"]
+    tar_file_name_list = [".pdiparams", ".pdiparams.info", ".pdmodel", ".json"]
+    my_files = set()
     with tarfile.open(file_path, "r") as tarObj:
+        
         for member in tarObj.getmembers():
             filename = None
 
             for tar_file_name in tar_file_name_list:
                 if member.name.endswith(tar_file_name):
                     filename = "inference" + tar_file_name
+                    my_files.add(filename)
 
             if filename is None:
                 continue
@@ -94,7 +97,7 @@ def unzip_file(file_path: str, save_dir: InputType, is_del_raw: bool = True) -> 
     if is_del_raw:
         Path(file_path).unlink()
         print(f"The {file_path} has been deleted.")
-    return model_dir
+    return {"model_dir": model_dir, "my_files": my_files}
 
 
 def is_http_url(s: InputType) -> bool:

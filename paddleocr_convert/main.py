@@ -33,11 +33,11 @@ class PaddleOCRModelConvert:
 
         model_path = self.get_file_path(model_path, save_dir)
 
-        model_dir = unzip_file(model_path, save_dir, is_del_raw=is_del_raw)
+        unzip_result = unzip_file(model_path, save_dir, is_del_raw=is_del_raw)
 
-        save_onnx_path = model_dir / f"{Path(model_path).stem}.onnx"
+        save_onnx_path = unzip_result.get('model_dir', '') / f"{Path(model_path).stem}.onnx"
         try:
-            self.convert_to_onnx(model_dir, save_onnx_path)
+            self.convert_to_onnx(unzip_result, save_onnx_path)
         except ConvertError as e:
             raise e
 
@@ -80,16 +80,20 @@ class PaddleOCRModelConvert:
             raise FileExistsError(f"{file_path} does not exist.")
         return file_path
 
-    def convert_to_onnx(self, model_dir: str, save_onnx_path: str) -> None:
+    def convert_to_onnx(self, unzip_result: object, save_onnx_path: str) -> None:
         """借助 :code:`paddle2onnx` 工具转换模型为onnx格式
 
         Args:
             model_dir (str): 保存paddle格式模型所在目录
             save_onnx_path (str): 保存的onnx全路径
         """
+        model_dir = unzip_result.get("model_dir", "")
+        my_files = unzip_result.get("my_files", {})
+        model_filename = 'inference.json' if "inference.json" in my_files else 'inference.pdmodel'
+
         shell_str = (
             f"paddle2onnx --model_dir {model_dir} "
-            "--model_filename inference.pdmodel "
+            f"--model_filename {model_filename} "
             "--params_filename inference.pdiparams "
             f"--opset_version {self.opset} "
             f"--save_file {save_onnx_path}"
