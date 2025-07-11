@@ -84,7 +84,9 @@ class PaddleOCRModelConvert:
         """借助 :code:`paddle2onnx` 工具转换模型为onnx格式
 
         Args:
-            model_dir (str): 保存paddle格式模型所在目录
+            unzip_result (object):
+                - model_dir (Path): 解压后模型保存路径。
+                - my_files (set): 解压得到的文件名集合。
             save_onnx_path (str): 保存的onnx全路径
         """
         model_dir = unzip_result.get("model_dir", "")
