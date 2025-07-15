@@ -3,4 +3,4 @@ requests>=2.27.1
 tqdm>=4.64.1
 paddle2onnx>=1.0.0
 colorlog
-paddlepaddle==3.1.0
+paddlepaddle==3.1.0  -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
