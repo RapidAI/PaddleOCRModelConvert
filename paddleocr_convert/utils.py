@@ -5,12 +5,17 @@
 import re
 import tarfile
 from pathlib import Path
-from typing import Union
+from typing import TypedDict, Set, Union
 
 import requests
 from tqdm import tqdm
 
 InputType = Union[str, Path]
+
+
+class UnzipResult(TypedDict):
+    model_dir: Path
+    my_files: Set[str]
 
 
 class DownloadModelError(Exception):
@@ -52,7 +57,7 @@ def download_file(url: str, save_dir: InputType) -> Path:
 
     save_path = Path(save_dir) / Path(url).name
     with tqdm(
-        total=total_size_in_bytes, unit="iB", unit_scale=True, desc="Downloading"
+            total=total_size_in_bytes, unit="iB", unit_scale=True, desc="Downloading"
     ) as pb:
         with open(save_path, "wb") as file:
             for data in response.iter_content(block_size):
@@ -61,7 +66,7 @@ def download_file(url: str, save_dir: InputType) -> Path:
     return save_path
 
 
-def unzip_file(file_path: str, save_dir: InputType, is_del_raw: bool = True) -> Path:
+def unzip_file(file_path: str, save_dir: InputType, is_del_raw: bool = True) -> UnzipResult:
     """解压下载得到的tar模型文件，会自动解压到save_dir下以file_path命名的目录下
 
     Args:
@@ -70,19 +75,24 @@ def unzip_file(file_path: str, save_dir: InputType, is_del_raw: bool = True) -> 
         is_del_raw (bool, optional): 是否删除原文件. Defaults to True.
 
     Returns:
-        Path: 解压后模型保存路径
+        dict:
+            - model_dir (Path): 解压后模型保存路径
+            - my_files (set): 解压得到的文件名集合
     """
     model_dir = Path(save_dir) / Path(file_path).stem
     mkdir(model_dir)
 
-    tar_file_name_list = [".pdiparams", ".pdiparams.info", ".pdmodel"]
+    tar_file_name_list = [".pdiparams", ".pdiparams.info", ".pdmodel", ".json"]
+    my_files = set()
     with tarfile.open(file_path, "r") as tarObj:
+
         for member in tarObj.getmembers():
             filename = None
 
             for tar_file_name in tar_file_name_list:
                 if member.name.endswith(tar_file_name):
                     filename = "inference" + tar_file_name
+                    my_files.add(filename)
 
             if filename is None:
                 continue
@@ -94,7 +104,7 @@ def unzip_file(file_path: str, save_dir: InputType, is_del_raw: bool = True) -> 
     if is_del_raw:
         Path(file_path).unlink()
         print(f"The {file_path} has been deleted.")
-    return model_dir
+    return {"model_dir": model_dir, "my_files": my_files}
 
 
 def is_http_url(s: InputType) -> bool:
