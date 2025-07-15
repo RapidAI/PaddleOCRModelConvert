@@ -116,9 +116,6 @@ class PaddleOCRModelConvert:
         with Popen(shell_str, stdout=PIPE, stderr=STDOUT, shell=True) as proc:
             run_log = "\n".join([v.decode() for v in proc.stdout.readlines()])
 
-        import pdb
-
-        pdb.set_trace()
         failed_phrases = ["Failed to", "parsing failed", "convert failed", "Oops"]
         if is_contain(run_log, failed_phrases) or not save_onnx_path.exists():
             raise ConvertError(run_log)
