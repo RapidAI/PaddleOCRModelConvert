@@ -4,44 +4,54 @@
 import argparse
 from pathlib import Path
 from subprocess import PIPE, STDOUT, Popen
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 import onnx
 
-from .utils import InputType, download_file, is_http_url, unzip_file
+from .utils import (
+    InputType,
+    Logger,
+    download_file,
+    is_contain,
+    is_http_url,
+    read_txt,
+    unzip_file,
+)
 
 
 class PaddleOCRModelConvert:
     def __init__(self) -> None:
         self.opset = 14
+        self.logger = Logger(logger_name=__name__).get_log()
 
     def __call__(
         self,
-        model_path: InputType,
+        model_url: str,
         save_dir: InputType,
         txt_path: Optional[str] = None,
         is_del_raw: bool = False,
-        is_rec: Optional[bool] = None
+        is_rec: Optional[bool] = None,
     ) -> str:
-        model_name = Path(model_path).stem
-        
+        model_name = Path(model_url).stem
+
         if is_rec is None:
             is_rec = "rec" in model_name
 
         if is_rec and not txt_path:
             raise ConvertError("Please give the txt url.")
 
-        model_path = self.get_file_path(model_path, save_dir)
+        model_file_path = self.get_file_path(model_url, save_dir)
+        unzip_result = unzip_file(model_file_path, save_dir, is_del_raw=is_del_raw)
 
-        unzip_result = unzip_file(model_path, save_dir, is_del_raw=is_del_raw)
-
-        save_onnx_path = unzip_result.get('model_dir', '') / f"{Path(model_path).stem}.onnx"
+        save_onnx_path = (
+            Path(unzip_result.get("model_dir", "")).parent / f"{model_name}.onnx"
+        )
         try:
             self.convert_to_onnx(unzip_result, save_onnx_path)
         except ConvertError as e:
             raise e
 
-        print(f"Successfully convert model to {save_onnx_path}")
+        self.logger.info(f"Successfully convert model to {save_onnx_path}")
 
         try:
             self.change_to_dynamic(save_onnx_path)
@@ -50,14 +60,16 @@ class PaddleOCRModelConvert:
 
         if is_rec:
             txt_path = self.get_file_path(txt_path, ".")
-            character_dict = self.read_txt(txt_path)
+            character_dict = read_txt(txt_path)
             self.write_dict_to_onnx(save_onnx_path, character_dict)
 
             if is_del_raw:
                 txt_path.unlink()
 
-            print("The dict of recognition has been written to the onnx model.")
-        return save_onnx_path
+            self.logger.info(
+                "The dict of recognition has been written to the onnx model."
+            )
+        return str(save_onnx_path)
 
     @staticmethod
     def get_file_path(file_path: str, save_dir: InputType) -> str:
@@ -74,25 +86,26 @@ class PaddleOCRModelConvert:
             str: 文件的本地路径
         """
         if is_http_url(file_path):
-            file_path = download_file(file_path, save_dir)
+            file_path = download_file(str(file_path), save_dir)
 
         if not Path(file_path).exists():
             raise FileExistsError(f"{file_path} does not exist.")
         return file_path
 
-    def convert_to_onnx(self, unzip_result: object, save_onnx_path: str) -> None:
+    def convert_to_onnx(self, unzip_result: object, save_onnx_path: Path) -> None:
         """借助 :code:`paddle2onnx` 工具转换模型为onnx格式
 
         Args:
             unzip_result (object):
                 - model_dir (Path): 解压后模型保存路径。
                 - my_files (set): 解压得到的文件名集合。
-            save_onnx_path (str): 保存的onnx全路径
+            save_onnx_path (Path): 保存的onnx全路径
         """
         model_dir = unzip_result.get("model_dir", "")
         my_files = unzip_result.get("my_files", {})
-        model_filename = 'inference.json' if "inference.json" in my_files else 'inference.pdmodel'
-
+        model_filename = (
+            "inference.json" if "inference.json" in my_files else "inference.pdmodel"
+        )
         shell_str = (
             f"paddle2onnx --model_dir {model_dir} "
             f"--model_filename {model_filename} "
@@ -103,8 +116,11 @@ class PaddleOCRModelConvert:
         with Popen(shell_str, stdout=PIPE, stderr=STDOUT, shell=True) as proc:
             run_log = "\n".join([v.decode() for v in proc.stdout.readlines()])
 
+        import pdb
+
+        pdb.set_trace()
         failed_phrases = ["Failed to", "parsing failed", "convert failed", "Oops"]
-        if self.is_contain(run_log, failed_phrases) or not save_onnx_path.exists():
+        if is_contain(run_log, failed_phrases) or not save_onnx_path.exists():
             raise ConvertError(run_log)
 
     def change_to_dynamic(self, onnx_path: Union[str, Path]) -> None:
@@ -127,10 +143,10 @@ class PaddleOCRModelConvert:
         if dynamic_name not in dim_shapes[3].dim_param:
             onnx_model.graph.input[0].type.tensor_type.shape.dim[3].dim_param = "?"
 
-        print("The model has changed to dynamic inputs.")
+        self.logger.info("The model has changed to dynamic inputs.")
         onnx.save(onnx_model, onnx_path)
 
-    def write_dict_to_onnx(self, model_path: str, character_dict: str):
+    def write_dict_to_onnx(self, model_path: Union[str, Path], character_dict: str):
         """将文本识别模型对应的字典文件写入到onnx模型中
 
         Args:
@@ -142,28 +158,6 @@ class PaddleOCRModelConvert:
         meta.key = "character"
         meta.value = character_dict
         onnx.save_model(model, str(model_path))
-
-    @staticmethod
-    def read_txt(txt_path: Union[str, Path]) -> str:
-        """读取txt文件
-
-        Args:
-            txt_path (Union[str, Path]): 字典文件全路径
-
-        Returns:
-            str: 字典字符串
-        """
-        with open(str(txt_path), "r", -1, "u8") as f:
-            value = f.read()
-        return value
-
-    @staticmethod
-    def is_contain(
-        sentence: str,
-        key_words: Union[str, List],
-    ) -> bool:
-        """sentences中是否包含key_words中任意一个"""
-        return any(i in sentence for i in key_words)
 
 
 class ConvertError(Exception):
@@ -191,7 +185,6 @@ def main():
     args = parser.parse_args()
 
     converter = PaddleOCRModelConvert()
-
     converter(args.model_path, args.save_dir, args.txt_path)
 
 

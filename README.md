@@ -5,7 +5,7 @@
      <div>&nbsp;</div>
      <a href="https://huggingface.co/spaces/SWHL/PaddleOCRModelConverter" target="_blank"><img src="https://img.shields.io/badge/%F0%9F%A4%97 -Online Convert-blue"></a>
      <a href="https://www.modelscope.cn/studios/liekkas/PaddleOCRModelConverter/summary" target="_blank"><img src="https://img.shields.io/badge/ModelScope-Online Convert -blue"></a>
-     <a href=""><img src="https://img.shields.io/badge/Python->=3.6,<3.13-aff.svg"></a>
+     <a href=""><img src="https://img.shields.io/badge/Python->=3.6-aff.svg"></a>
      <a href=""><img src="https://img.shields.io/badge/OS-Linux%2C%20Win%2C%20Mac-pink.svg"></a>
      <a href="https://pypi.org/project/paddleocr_convert/"><img alt="PyPI" src="https://img.shields.io/pypi/v/paddleocr_convert"></a>
      <a href="https://pepy.tech/project/paddleocr_convert"><img src="https://static.pepy.tech/personalized-badge/paddleocr_convert?period=total&units=abbreviation&left_color=grey&right_color=blue&left_text=Downloads "></a>
@@ -14,6 +14,7 @@
 </div>
 
 ### Introduction
+
 - This repository is mainly to convert [Inference Model in PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md) into ONNX format.
 - **Input**: **url** or local **tar** path of inference model
 - **Output**: converted **ONNX** model
@@ -21,8 +22,8 @@
 - ☆ It needs to be used with the relevant reasoning code in [RapidOCR](https://github.com/RapidAI/RapidOCR)
 - If you encounter a model that cannot be successfully converted, you can check which steps are wrong one by one according to the ideas in the figure below.
 
-
 ### Overall framework
+
 ```mermaid
 flowchart TD
 
@@ -32,11 +33,13 @@ D --> E([Save])
 ```
 
 ### Installation
+
 ```bash
 pip install paddleocr_convert
 ```
 
 ### Usage
+>
 > [!WARNING]
 >
 > Only support the **reasoning model** in the download address in [link](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/models_list.md), if it is a training model, Manual conversion to inference format is required.
@@ -44,7 +47,9 @@ pip install paddleocr_convert
 > The **slim quantized model** in PaddleOCR does not support conversion.
 
 #### Using the command line
+
 - Usage:
+
     ```bash
     $ paddleocr_convert -h
     usage: paddleocr_convert [-h] [-p MODEL_PATH] [-o SAVE_DIR]
@@ -63,9 +68,11 @@ pip install paddleocr_convert
                             The raw txt url or local txt path, if the model is
                             recognition model.
     ```
+
 - Example:
+
     ```bash
-    #online
+    # online
     $ paddleocr_convert -p https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_det_infer.tar \
                         -o models
 
@@ -74,16 +81,18 @@ pip install paddleocr_convert
                         -txt_path https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/release/2.6/ppocr/utils/ppocr_keys_v1.txt
 
     # offline
-    $ paddleocr_convert -p models/ch_PP-OCRv3_det_infer.tar\
+    $ paddleocr_convert -p models/ch_PP-OCRv3_det_infer.tar \
                         -o models
 
-    $ paddleocr_convert -p models/ch_PP-OCRv3_rec_infer.tar\
+    $ paddleocr_convert -p models/ch_PP-OCRv3_rec_infer.tar \
                         -o models\
                         -txt_path models/ppocr_keys_v1.txt
     ```
 
 #### Script use
+
 - online mode
+
     ```python
     from paddleocr_convert import PaddleOCRModelConvert
 
@@ -94,7 +103,9 @@ pip install paddleocr_convert
 
     converter(url, save_dir, txt_path=txt_url)
     ```
+
 - offline mode
+
     ```python
     from paddleocr_convert import PaddleOCRModelConvert
 
@@ -106,28 +117,31 @@ pip install paddleocr_convert
     ```
 
 ### Use the model
+
 Assuming that the model needs to be recognized in Japanese, and it has been converted, the path is `local/models/japan.onnx`
 
-1. Install `rapidocr_onnxruntime` library
+1. Install `rapidocr` library
+
     ```bash
-    pip install rapidocr_onnxruntime
+    # rapidocr v3.2.0
+    pip install rapidocr onnxruntime
     ```
+
 2. Script use
+
     ```python
-    from rapidocr_onnxruntime import RapidOCR
+    from rapidocr import RapidOCR
 
     model_path = 'local/models/japan.onnx'
-    engine = RapidOCR(rec_model_path=model_path)
+    engine = RapidOCR(params={'Rec.model_path': model_path})
 
-    img = '1.jpg'
-    result, elapse = engine(img)
-    ```
-3. CLI use
-    ```bash
-    rapidocr_onnxruntime -img 1.jpg --rec_model_path local/models/japan.onnx
+    img_url = "https://img1.baidu.com/it/u=3619974146,1266987475&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=516"
+    result = engine(img_url)
+    print(result)
+    result.vis('vis_result.jpg)
     ```
 
-### Changelog
+### Changelog ([more](https://github.com/RapidAI/PaddleOCRModelConvert/releases))
 
 <details>
     <summary>Click to expand</summary>
@@ -135,18 +149,18 @@ Assuming that the model needs to be recognized in Japanese, and it has been conv
 - 2023-09-22 v0.0.17 update:
     - Improve the log when meets the error.
 - 2023-07-27 v0.0.16 update:
-   - Added the online conversion version of ModelScope.
-   - Change python version from python 3.6 ~ 3.11.
+    - Added the online conversion version of ModelScope.
+    - Change python version from python 3.6 ~ 3.11.
 - 2023-04-13 update:
-   - Add online conversion program [link](https://huggingface.co/spaces/SWHL/PaddleOCRModelConverter)
+    - Add online conversion program [link](https://huggingface.co/spaces/SWHL/PaddleOCRModelConverter)
 - 2023-03-05 v0.0.4~7 update:
-   - Support transliteration of local models and dictionaries
-   - Optimize internal logic and error feedback
+    - Support transliteration of local models and dictionaries
+    - Optimize internal logic and error feedback
 - 2023-02-28 v0.0.3 update:
-   - Added setting to automatically change to dynamic input for models that are not dynamic input
+    - Added setting to automatically change to dynamic input for models that are not dynamic input
 - 2023-02-27 v0.0.2 update:
-   - Encapsulate the conversion model code into a package, which is convenient for self-help model conversion
+    - Encapsulate the conversion model code into a package, which is convenient for self-help model conversion
 - 2022-08-15 v0.0.1 update:
-   - Write the dictionary of the recognition model into the meta in the onnx model for subsequent distribution.
+    - Write the dictionary of the recognition model into the meta in the onnx model for subsequent distribution.
 
 </details>

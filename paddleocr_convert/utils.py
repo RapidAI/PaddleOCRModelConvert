@@ -2,15 +2,59 @@
 # @Author: SWHL
 # @Contact: liekkaskono@163.com
 # github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/ppocr/utils/network.py
-import re
+import logging
 import tarfile
 from pathlib import Path
-from typing import TypedDict, Set, Union
+from typing import List, Set, TypedDict, Union
+from urllib.parse import urlparse
 
+import colorlog
 import requests
 from tqdm import tqdm
 
 InputType = Union[str, Path]
+
+
+class Logger:
+    def __init__(self, log_level=logging.DEBUG, logger_name=None):
+        self.logger = logging.getLogger(logger_name)
+        self.logger.setLevel(log_level)
+        self.logger.propagate = False
+
+        formatter = colorlog.ColoredFormatter(
+            "%(log_color)s[%(levelname)s] %(asctime)s [PaddleOCRModelConvert] %(filename)s:%(lineno)d: %(message)s",
+            log_colors={
+                "DEBUG": "cyan",
+                "INFO": "green",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "red,bg_white",
+            },
+        )
+
+        if not self.logger.handlers:
+            console_handler = logging.StreamHandler()
+            console_handler.setFormatter(formatter)
+
+            for handler in self.logger.handlers:
+                self.logger.removeHandler(handler)
+
+            console_handler.setLevel(log_level)
+            self.logger.addHandler(console_handler)
+
+    def get_log(self):
+        return self.logger
+
+
+def read_txt(txt_path: Union[str, Path]) -> str:
+    with open(str(txt_path), "r", -1, "u8") as f:
+        value = f.read()
+    return value
+
+
+def is_contain(sentence: str, key_words: Union[str, List]) -> bool:
+    """sentences中是否包含key_words中任意一个"""
+    return any(i in sentence for i in key_words)
 
 
 class UnzipResult(TypedDict):
@@ -57,7 +101,7 @@ def download_file(url: str, save_dir: InputType) -> Path:
 
     save_path = Path(save_dir) / Path(url).name
     with tqdm(
-            total=total_size_in_bytes, unit="iB", unit_scale=True, desc="Downloading"
+        total=total_size_in_bytes, unit="iB", unit_scale=True, desc="Downloading"
     ) as pb:
         with open(save_path, "wb") as file:
             for data in response.iter_content(block_size):
@@ -66,7 +110,9 @@ def download_file(url: str, save_dir: InputType) -> Path:
     return save_path
 
 
-def unzip_file(file_path: str, save_dir: InputType, is_del_raw: bool = True) -> UnzipResult:
+def unzip_file(
+    file_path: str, save_dir: InputType, is_del_raw: bool = True
+) -> UnzipResult:
     """解压下载得到的tar模型文件，会自动解压到save_dir下以file_path命名的目录下
 
     Args:
@@ -85,7 +131,6 @@ def unzip_file(file_path: str, save_dir: InputType, is_del_raw: bool = True) -> 
     tar_file_name_list = [".pdiparams", ".pdiparams.info", ".pdmodel", ".json"]
     my_files = set()
     with tarfile.open(file_path, "r") as tarObj:
-
         for member in tarObj.getmembers():
             filename = None
 
@@ -108,25 +153,8 @@ def unzip_file(file_path: str, save_dir: InputType, is_del_raw: bool = True) -> 
 
 
 def is_http_url(s: InputType) -> bool:
-    """判断是否为url
-
-    Args:
-        s (InputType): 输入的字符串
-
-    Returns:
-        bool: 是或否
-    """
-    regex = re.compile(
-        r"^(?:http|ftp)s?://"  # http:// or https://
-        # domain...
-        r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|"
-        r"localhost|"  # localhost...
-        r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"  # ...or ip
-        r"(?::\d+)?"  # optional port
-        r"(?:/?|[/?]\S+)$",
-        re.IGNORECASE,
-    )
-
-    if regex.match(str(s)):
-        return True
-    return False
+    try:
+        result = urlparse(str(s))
+        return all([result.scheme, result.netloc])
+    except Exception as e:
+        return False
